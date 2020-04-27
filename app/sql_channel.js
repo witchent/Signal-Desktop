@@ -1,10 +1,11 @@
-const electron = require('electron');
+// const electron = require('electron');
 const Queue = require('p-queue').default;
 const sql = require('./sql');
 const { remove: removeUserConfig } = require('./user_config');
 const { remove: removeEphemeralConfig } = require('./ephemeral_config');
 
-const { ipcMain } = electron;
+// const { ipcMain } = electron;
+const ipcMain  = window.emitter;
 
 module.exports = {
   initialize,
@@ -102,17 +103,17 @@ function initialize() {
   }
   initialized = true;
 
-  ipcMain.on(SQL_CHANNEL_KEY, async (event, jobId, callName, ...args) => {
+  ipcMain.on(SQL_CHANNEL_KEY, async (jobId, callName, ...args) => {
     try {
       const result = await handleCall(callName, jobId, args);
-      event.sender.send(`${SQL_CHANNEL_KEY}-done`, jobId, null, result);
+      ipcMain.emit(`${SQL_CHANNEL_KEY}-done`, jobId, null, result);
     } catch (error) {
       const errorForDisplay = error && error.stack ? error.stack : error;
       console.log(
         `sql channel error with call ${callName}: ${errorForDisplay}`
       );
       if (!event.sender.isDestroyed()) {
-        event.sender.send(`${SQL_CHANNEL_KEY}-done`, jobId, errorForDisplay);
+        ipcMain.emit(`${SQL_CHANNEL_KEY}-done`, jobId, errorForDisplay);
       }
     }
   });
@@ -121,11 +122,11 @@ function initialize() {
     try {
       removeUserConfig();
       removeEphemeralConfig();
-      event.sender.send(`${ERASE_SQL_KEY}-done`);
+      ipcMain.emit(`${ERASE_SQL_KEY}-done`);
     } catch (error) {
       const errorForDisplay = error && error.stack ? error.stack : error;
       console.log(`sql-erase error: ${errorForDisplay}`);
-      event.sender.send(`${ERASE_SQL_KEY}-done`, error);
+      ipcMain.emit(`${ERASE_SQL_KEY}-done`, error);
     }
   });
 }

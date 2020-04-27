@@ -1,6 +1,6 @@
 /* global window, setTimeout, IDBKeyRange, ConversationController */
 
-const electron = require('electron');
+// const electron = require('electron');
 
 const {
   cloneDeep,
@@ -18,7 +18,8 @@ const { base64ToArrayBuffer, arrayBufferToBase64 } = require('./crypto');
 const MessageType = require('./types/message');
 const { createBatcher } = require('../../ts/util/batcher');
 
-const { ipcRenderer } = electron;
+// const { ipcRenderer } = electron;
+const ipcRenderer  = window.emitter;
 
 // We listen to a lot of events on ipcRenderer, often on the same channel. This prevents
 //   any warnings that might be sent to the console in that case.
@@ -346,7 +347,7 @@ function _getJob(id) {
 
 ipcRenderer.on(
   `${SQL_CHANNEL_KEY}-done`,
-  (event, jobId, errorForDisplay, result) => {
+  (jobId, errorForDisplay, result) => {
     const job = _getJob(jobId);
     if (!job) {
       throw new Error(
@@ -374,7 +375,7 @@ function makeChannel(fnName) {
 
     return new Promise((resolve, reject) => {
       try {
-        ipcRenderer.send(SQL_CHANNEL_KEY, jobId, fnName, ...args);
+        ipcRenderer.emit(SQL_CHANNEL_KEY, jobId, fnName, ...args);
 
         _updateJob(jobId, {
           resolve,
@@ -1092,7 +1093,7 @@ async function removeOtherData() {
 
 async function callChannel(name) {
   return new Promise((resolve, reject) => {
-    ipcRenderer.send(name);
+    ipcRenderer.emit(name);
     ipcRenderer.once(`${name}-done`, (event, error) => {
       if (error) {
         return reject(error);
