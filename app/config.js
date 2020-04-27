@@ -1,10 +1,11 @@
 const path = require('path');
-const { app } = require('electron');
+// const { app } = require('electron');
+const electronIsDev = require('electron-is-dev');
 
 let environment;
 
 // In production mode, NODE_ENV cannot be customized by the user
-if (!app.isPackaged) {
+if (electronIsDev) {
   environment = process.env.NODE_ENV || 'development';
 } else {
   environment = 'production';
