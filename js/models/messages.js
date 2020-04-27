@@ -2394,7 +2394,7 @@
           conversation.trigger('newmessage', message);
 
           if (message.get('unread')) {
-            await conversation.notify(message);
+//             await conversation.notify(message);
           }
 
           // Does this message have any pending, previously-received associated reactions?
