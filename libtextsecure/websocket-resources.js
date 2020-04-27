@@ -71,6 +71,9 @@
     socket
   ) {
     const request = new Request(options);
+    if(!request.headers) {
+      request.headers = null;
+    }
     outgoing[request.id] = request;
     socket.send(
       new textsecure.protobuf.WebSocketMessage({
