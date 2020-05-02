@@ -2445,7 +2445,7 @@
 
         // Only notify for reactions to our own messages
         if (conversation && this.isOutgoing() && !reaction.get('fromSync')) {
-          conversation.notify(this, reaction);
+//          conversation.notify(this, reaction);
         }
       }
 
