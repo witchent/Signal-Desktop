@@ -12,7 +12,7 @@
   },
   "main": "main.js",
   "scripts": {
-    "postinstall": "snyk protect && patch-package && electron-builder install-app-deps && rimraf node_modules/dtrace-provider",
+    "postinstall": "rimraf node_modules/dtrace-provider",
     "start": "electron .",
     "grunt": "grunt",
     "generate": "yarn grunt",
@@ -251,9 +251,6 @@
     "webpack": "4.39.2",
     "webpack-cli": "3.3.7",
     "webpack-dev-server": "3.8.0"
-  },
-  "engines": {
-    "node": "12.13.0"
   },
   "build": {
     "appId": "org.whispersystems.signal-desktop",
