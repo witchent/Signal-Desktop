@@ -2456,7 +2456,7 @@
           conversation.trigger('newmessage', message);
 
           if (message.get('unread')) {
-            await conversation.notify(message);
+//             await conversation.notify(message);
           }
 
           // Does this message have any pending, previously-received associated reactions?
@@ -2516,7 +2516,7 @@
 
         // Only notify for reactions to our own messages
         if (conversation && this.isOutgoing() && !reaction.get('fromSync')) {
-          conversation.notify(this, reaction);
+//           conversation.notify(this, reaction);
         }
       }
 
