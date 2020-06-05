@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { app } = require('electron');
+// const { app } = require('electron');
 
 const { start } = require('./base_config');
 const config = require('./config');

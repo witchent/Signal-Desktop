@@ -1,6 +1,13 @@
 // tslint:disable no-default-export no-unnecessary-local-variable
 
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
+//Needed because window.emitter is unknown at compile time
+declare global {
+    interface Window {
+        emitter:any;
+    }
+}
+const ipcRenderer  = window.emitter;
 
 import {
   cloneDeep,
@@ -405,7 +412,8 @@ function _getJob(id: number) {
 
 ipcRenderer.on(
   `${SQL_CHANNEL_KEY}-done`,
-  (_, jobId, errorForDisplay, result) => {
+  //Need any as we use the emitter which is unkonwn at compile-time
+  (jobId: any, errorForDisplay: any, result: any) => {
     const job = _getJob(jobId);
     if (!job) {
       throw new Error(
@@ -439,7 +447,7 @@ function makeChannel(fnName: string) {
 
     return new Promise((resolve, reject) => {
       try {
-        ipcRenderer.send(SQL_CHANNEL_KEY, jobId, fnName, ...args);
+        ipcRenderer.emit(SQL_CHANNEL_KEY, jobId, fnName, ...args);
 
         _updateJob(jobId, {
           resolve,
@@ -1278,8 +1286,8 @@ async function removeOtherData() {
 
 async function callChannel(name: string) {
   return new Promise((resolve, reject) => {
-    ipcRenderer.send(name);
-    ipcRenderer.once(`${name}-done`, (_, error) => {
+    ipcRenderer.emit(name);
+    ipcRenderer.once(`${name}-done`, (_: any, error: any) => {
       if (error) {
         reject(error);
 
