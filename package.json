@@ -77,6 +77,7 @@
     "copy-text-to-clipboard": "2.1.0",
     "curve25519-n": "https://github.com/scottnonnenberg-signal/node-curve25519.git#3e94f60bc54b2426476520d8d1a0aa835c25f5cc",
     "draft-js": "0.10.5",
+    "electron-is-dev": "0.3.0",
     "emoji-datasource": "5.0.1",
     "emoji-datasource-apple": "5.0.1",
     "emoji-regex": "8.0.0",
