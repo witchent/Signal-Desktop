@@ -1666,6 +1666,15 @@
     },
 
     async addMessageHistoryDisclaimer() {
+      const lastMessage = this.messageCollection.last();
+      if (
+        lastMessage &&
+        lastMessage.get('type') === 'message-history-unsynced'
+      ) {
+        // We do not need another message history disclaimer
+        return lastMessage;
+      }
+
       const timestamp = Date.now();
 
       const model = new Whisper.Message({
@@ -1727,7 +1736,8 @@
         message.send(
           this.wrapSend(
             textsecure.messaging.resetSession(
-              this.get('uuid') || this.get('e164'),
+              this.get('uuid'),
+              this.get('e164'),
               now,
               options
             )
@@ -1942,9 +1952,7 @@
 
         const profileKey = c.get('profileKey');
         const uuid = c.get('uuid');
-        const profileKeyVersionHex = window.VERSIONED_PROFILE_FETCH
-          ? c.get('profileKeyVersion')
-          : null;
+        const profileKeyVersionHex = c.get('profileKeyVersion');
         const existingProfileKeyCredential = c.get('profileKeyCredential');
 
         const weHaveVersion = Boolean(
@@ -1966,7 +1974,8 @@
         }
 
         const sendMetadata = c.getSendMetadata({ disableMeCheck: true }) || {};
-        const getInfo = sendMetadata[c.id] || {};
+        const getInfo =
+          sendMetadata[c.get('e164')] || sendMetadata[c.get('uuid')] || {};
 
         if (getInfo.accessKey) {
           try {
@@ -2244,10 +2253,6 @@
     async deriveProfileKeyVersionIfNeeded() {
       const profileKey = this.get('profileKey');
       if (!profileKey) {
-        return;
-      }
-      // We won't even save derived profile key versions if we haven't flipped this switch
-      if (!window.VERSIONED_PROFILE_FETCH) {
         return;
       }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { compact, flatten } from 'lodash';
 
 import { ContactName } from './ContactName';
-import { FullJSXType, Intl } from '../Intl';
+import { Intl } from '../Intl';
 import { LocalizerType } from '../../types/Util';
 
 import { missingCaseError } from '../../util/missingCaseError';
@@ -36,7 +36,7 @@ export class GroupNotification extends React.Component<Props> {
     const { contacts, type, newName } = change;
     const { i18n } = this.props;
 
-    const otherPeople = compact(
+    const otherPeople: Array<JSX.Element> = compact(
       (contacts || []).map(contact => {
         if (contact.isMe) {
           return null;
@@ -56,7 +56,7 @@ export class GroupNotification extends React.Component<Props> {
         );
       })
     );
-    const otherPeopleWithCommas: FullJSXType = compact(
+    const otherPeopleWithCommas: Array<JSX.Element | string> = compact(
       flatten(
         otherPeople.map((person, index) => [index > 0 ? ', ' : null, person])
       )
@@ -75,32 +75,25 @@ export class GroupNotification extends React.Component<Props> {
           throw new Error('Group update is missing contacts');
         }
 
-        if (contacts.length === 1) {
-          if (contactsIncludesMe) {
-            return <Intl i18n={i18n} id="youJoinedTheGroup" />;
-          } else {
-            return (
-              <Intl
-                i18n={i18n}
-                id="joinedTheGroup"
-                components={[otherPeopleWithCommas]}
-              />
-            );
-          }
-        }
+        const otherPeopleNotifMsg =
+          otherPeople.length === 1
+            ? 'joinedTheGroup'
+            : 'multipleJoinedTheGroup';
 
         return (
           <>
-            <Intl
-              i18n={i18n}
-              id="multipleJoinedTheGroup"
-              components={[otherPeopleWithCommas]}
-            />
-            {contactsIncludesMe ? (
+            {otherPeople.length > 0 && (
+              <Intl
+                i18n={i18n}
+                id={otherPeopleNotifMsg}
+                components={[otherPeopleWithCommas]}
+              />
+            )}
+            {contactsIncludesMe && (
               <div className="module-group-notification__change">
                 <Intl i18n={i18n} id="youJoinedTheGroup" />
               </div>
-            ) : null}
+            )}
           </>
         );
       case 'remove':
