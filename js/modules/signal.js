@@ -49,16 +49,16 @@ const {
 const {
   StagedLinkPreview,
 } = require('../../ts/components/conversation/StagedLinkPreview');
-const {
-  getCallingNotificationText,
-} = require('../../ts/components/conversation/CallingNotification');
+// const {
+//   getCallingNotificationText,
+// } = require('../../ts/components/conversation/CallingNotification');
 
 // State
 const { createTimeline } = require('../../ts/state/roots/createTimeline');
 const {
   createCompositionArea,
 } = require('../../ts/state/roots/createCompositionArea');
-const { createCallManager } = require('../../ts/state/roots/createCallManager');
+// const { createCallManager } = require('../../ts/state/roots/createCallManager');
 const { createLeftPane } = require('../../ts/state/roots/createLeftPane');
 const {
   createSafetyNumberViewer,
@@ -74,7 +74,7 @@ const {
 } = require('../../ts/state/roots/createShortcutGuideModal');
 
 const { createStore } = require('../../ts/state/createStore');
-const callingDuck = require('../../ts/state/ducks/calling');
+// const callingDuck = require('../../ts/state/ducks/calling');
 const conversationsDuck = require('../../ts/state/ducks/conversations');
 const emojisDuck = require('../../ts/state/ducks/emojis');
 const expirationDuck = require('../../ts/state/ducks/expiration');
@@ -115,7 +115,7 @@ const {
   initializeUpdateListener,
 } = require('../../ts/services/updateListener');
 const { notify } = require('../../ts/services/notify');
-const { calling } = require('../../ts/services/calling');
+// const { calling } = require('../../ts/services/calling');
 
 function initializeMigrations({
   userDataPath,
@@ -281,7 +281,7 @@ exports.setup = (options = {}) => {
     ContactListItem,
     ConversationHeader,
     Emojify,
-    getCallingNotificationText,
+//     getCallingNotificationText,
     Lightbox,
     LightboxGallery,
     MediaGallery,
@@ -295,7 +295,7 @@ exports.setup = (options = {}) => {
   };
 
   const Roots = {
-    createCallManager,
+//     createCallManager,
     createCompositionArea,
     createLeftPane,
     createSafetyNumberViewer,
@@ -306,7 +306,7 @@ exports.setup = (options = {}) => {
   };
 
   const Ducks = {
-    calling: callingDuck,
+//     calling: callingDuck,
     conversations: conversationsDuck,
     emojis: emojisDuck,
     expiration: expirationDuck,
@@ -327,7 +327,7 @@ exports.setup = (options = {}) => {
     initializeNetworkObserver,
     initializeUpdateListener,
     notify,
-    calling,
+//     calling,
   };
 
   const State = {

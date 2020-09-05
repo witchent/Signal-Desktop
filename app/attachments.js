@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const path = require('path');
-const { app, dialog, shell, remote } = require('electron');
+// const { app, dialog, shell, remote } = require('electron');
 
 const fastGlob = require('fast-glob');
 const glob = require('glob');
