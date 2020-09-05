@@ -3,6 +3,10 @@
         "message": "त्रुटी कॉपी करा आणि सोडा",
         "description": "Shown in the top-level error popup, allowing user to copy the error text and close the app"
     },
+    "unknownContact": {
+        "message": "Unknown contact",
+        "description": "Shown as the name of a contact if we don't have any displayable information about them"
+    },
     "unknownGroup": {
         "message": "अज्ञात गट",
         "description": "Shown as the name of a group if we don't have any information about it"
@@ -337,50 +341,34 @@
         "message": "आपण शेवटचे सत्यापित केल्यापासून या गट सदस्यांसोबतचे आपले सुरक्षितता नंबर बदलले आहेत. आपला त्यांच्यासोबतचा नवीन सुरक्षितता नंबर बघण्यासाठी एका गट सदस्यावर क्लिक करा.",
         "description": "When there are multiple previously-verified group members with safety number changes, a banner will be shown. The list of contacts with safety number changes is shown, and this text introduces that list."
     },
-    "changedSinceVerifiedMultiple": {
-        "message": "आपण शेवटचे सत्यापित केल्यापासून अनेक गट सदस्यांसोबतचे आपले सुरक्षितता नंबर बदलले आहेत. ह्याचा अर्थ कुणीतरी आपल्या परस्परसंवादामध्ये अटकाव करण्याचा प्रयत्न करतो आहे किंवा त्यांनी Signal पुनर्स्थापित केले आहे असा होऊ शकतो.",
-        "description": "Shown on confirmation dialog when user attempts to send a message"
-    },
-    "changedSinceVerified": {
-        "message": "आपण शेवटचे सत्यापित केल्यापासून $name$ सोबतचा आपला सुरक्षितता नंबर बदलला आहे. ह्याचा अर्थ कुणीतरी आपले परस्परसंवादामध्ये अटकाव करण्याचा प्रयत्न करतो आहे किंवा $name$ याने Signal पुनर्स्थापित केले आहे असा होऊ शकतो.",
-        "description": "Shown on confirmation dialog when user attempts to send a message",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Bob"
-            }
-        }
-    },
     "changedRightAfterVerify": {
-        "message": "आपण सत्यापित करण्याचा प्रयत्न करत असलेला सुरक्षितता नंबर बदलला आहे. कृपया $name$ सोबतचा आपला नवीन सुरक्षितता नंबरचे पुनरावलोकन करा. आपल्यालक्षात ठेवा, ह्याचा अर्थ कुणीतरी आपले परस्परसंवादामध्ये अटकाव करण्याचा प्रयत्न करतो आहे किंवा $name$ याने Signal पुनर्स्थापित केले आहे असा होऊ शकतो.",
+        "message": "The safety number you are trying to verify has changed. Please review your new safety number with $name1$. Remember, this change could mean that someone is trying to intercept your communication or that $name2$ has simply reinstalled Signal.",
         "description": "Shown on the safety number screen when the user has selected to verify/unverify a contact's safety number, and we immediately discover a safety number change",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
+                "example": "Bob"
+            },
+            "name2": {
+                "content": "$2",
                 "example": "Bob"
             }
         }
     },
-    "changedRecentlyMultiple": {
-        "message": "अलीकडे अनेक गट सदस्यांसोबतचे आपले सुरक्षितता नंबर बदलले आहेत. ह्याचा अर्थ कुणीतरी आपल्या परस्परसंवादामध्ये अटकाव करण्याचा प्रयत्न करतो आहे किंवा त्यांनी Signal पुनर्स्थापित केले आहे असा होऊ शकतो.",
+    "changedVerificationWarning": {
+        "message": "The following people may have reinstalled or changed devices. Verify your safety number with them to ensure privacy.",
         "description": "Shown on confirmation dialog when user attempts to send a message"
     },
-    "changedRecently": {
-        "message": "अलीकडे $name$ सोबतचा आपला सुरक्षितता नंबर बदलला आहे. ह्याचा अर्थ कुणीतरी आपल्या परस्परसंवादामध्ये अटकाव करण्याचा प्रयत्न करतो आहे किंवा $name$ याने Signal पुनर्स्थापित केले आहे असा होऊ शकतो.",
-        "description": "Shown on confirmation dialog when user attempts to send a message",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Bob"
-            }
-        }
-    },
     "identityKeyErrorOnSend": {
-        "message": "$name$ सोबतचा आपला सुरक्षितता नंबर बदलला आहे. ह्याचा अर्थ कुणीतरी आपल्या परस्परसंवादामध्ये अटकाव करण्याचा प्रयत्न करतो आहे किंवा $name$ याने Signal पुनर्स्थापित केले आहे असा होऊ शकतो. या संपर्कासोबत आपण आपला सुरक्षितता नंबर सत्यापित करण्याची इच्छा ठेवू शकता.",
+        "message": "Your safety number with $name1$ has changed. This could either mean that someone is trying to intercept your communication or that $name2$ has simply reinstalled Signal. You may wish to verify your safety number with this contact.",
         "description": "Shown when user clicks on a failed recipient in the message detail view after an identity key change",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
+                "example": "Bob"
+            },
+            "name2": {
+                "content": "$2",
                 "example": "Bob"
             }
         }
@@ -410,6 +398,18 @@
     "debugLogError": {
         "message": "अपलोड सोबत काहीतरी चुकीचे झाले! कृपया आपण फाईल करणाऱ्या बग मध्ये आपले लॉग व्यक्तिचलितरीत्या जोडण्याचा विचार करावा.",
         "description": ""
+    },
+    "debugLogCopy": {
+        "message": "कॉपी करा",
+        "description": "Shown as the text for the copy button on the debug log screen"
+    },
+    "debugLogCopyAlt": {
+        "message": "Copy link to your clipboard",
+        "description": "Shown as the alt text for the copy button on the debug log screen"
+    },
+    "debugLogLinkCopied": {
+        "message": "Link Copied to Your Clipboard",
+        "description": "Shown in a taost to let the user know that the link to the debug log has been copied to their clipboard"
     },
     "reportIssue": {
         "message": "एका समस्येचा अहवाल द्या",
@@ -561,7 +561,7 @@
         "message": "विना-चित्र संलग्न समाविष्ट करताना, एक संलग्न प्रती संदेशची मर्यादा आहे.",
         "description": "An error popup when the user has attempted to add an attachment"
     },
-    "cannotMixImageAdnNonImageAttachments": {
+    "cannotMixImageAndNonImageAttachments": {
         "message": "आपण विना-चित्र आणि चित्र संलग्न एकत्र करू शकत नाही.",
         "description": "An error popup when the user has attempted to add an attachment"
     },
@@ -613,6 +613,10 @@
         "message": "Show Keyboard Shortcuts",
         "description": "Item under the help menu, pops up a screen showing the application's keyboard shortcuts"
     },
+    "contactUs": {
+        "message": "आमच्या सोबत संपर्क साधा",
+        "description": "Item under the help menu, takes you to the contact us support page"
+    },
     "goToReleaseNotes": {
         "message": "रिलीझ टिपा वर जा",
         "description": "Item under the help menu, takes you to GitHub page for release notes"
@@ -625,9 +629,13 @@
         "message": "समर्थन पृष्ठावर जा",
         "description": "Item under the Help menu, takes you to the support page"
     },
-    "menuReportIssue": {
-        "message": "समस्येचा अहवाल द्या",
-        "description": "Item under the Help menu, takes you to GitHub new issue form (title case)"
+    "goToGithub": {
+        "message": "Go to GitHub",
+        "description": "Item under the Help menu, takes you to the GitHub repository for Signal Desktop"
+    },
+    "joinTheBeta": {
+        "message": "Join the Beta",
+        "description": "Item under the Help menu, takes you to an article describing how to install the beta release of Signal Desktop"
     },
     "signalDesktopPreferences": {
         "message": "Signal Desktop प्राधान्यता",
@@ -690,6 +698,10 @@
         "description": "Shown in the search left pane when no results were found",
         "placeholders": {
             "searchTerm": {
+                "content": "$1",
+                "example": "dog"
+            },
+            "conversationName": {
                 "content": "$2",
                 "example": "Friends"
             }
@@ -718,6 +730,10 @@
     "typingAlt": {
         "message": "या संभाषणासाठी टाईपिंग अॅनिमेशन",
         "description": "Used as the 'title' attibute for the typing animation"
+    },
+    "contactInAddressBook": {
+        "message": "This person is in your contacts.",
+        "description": "Description of icon denoting that contact is from your address book"
     },
     "contactAvatarAlt": {
         "message": "$name$ संपर्कासाठी अवतार",
@@ -832,6 +848,14 @@
     "audioPermissionNeeded": {
         "message": "ऑडिओ संदेश पाठविण्यासाठी, Signal Desktop ला आपला मायक्रोफोन अॅक्सेस करण्याची अनुमती द्या.",
         "description": "Shown if the user attempts to send an audio message without audio permssions turned on"
+    },
+    "audioCallingPermissionNeeded": {
+        "message": "For calling, you must allow Signal Desktop to access your microphone.",
+        "description": "Shown if the user attempts access the microphone for calling without audio permssions turned on"
+    },
+    "videoCallingPermissionNeeded": {
+        "message": "For video calling, you must allow Signal Desktop to access your camera.",
+        "description": "Shown if the user attempts access the camera for video calling without video permssions turned on"
     },
     "allowAccess": {
         "message": "अॅक्सेस अनुमती द्या",
@@ -957,8 +981,8 @@
         "message": "सुरक्षितता नंबर बघा",
         "description": ""
     },
-    "viewAllMedia": {
-        "message": "सर्व मिडिया बघा",
+    "viewRecentMedia": {
+        "message": "View recent media",
         "description": "This is a menu item for viewing all media (images + video) in a conversation, using the imperative case, as in a command."
     },
     "verifyHelp": {
@@ -1083,20 +1107,44 @@
         "message": "क्षमस्व, आपल्याकडे आधीपासून खूप सारे डिव्हाईस लिंक केलेले आहेत. काही काढण्याचा प्रयत्न करा.",
         "description": ""
     },
-    "settings": {
-        "message": "सेटिंग",
-        "description": "Menu item and header for global settings"
+    "installTooOld": {
+        "message": "Update Signal on this device to link your phone.",
+        "description": ""
+    },
+    "installErrorHeader": {
+        "message": "काहीतरी चुकीचे झाले!",
+        "description": ""
+    },
+    "installTryAgain": {
+        "message": "पुन्हा प्रयत्न करा",
+        "description": ""
     },
     "theme": {
         "message": "थीम",
         "description": "Header for theme settings"
+    },
+    "calling": {
+        "message": "कॉलिंग",
+        "description": "Header for calling options on the settings screen"
+    },
+    "alwaysRelayCallsDescription": {
+        "message": "कॉल नेहमी रीले करा",
+        "description": "Description of the always relay calls setting"
+    },
+    "alwaysRelayCallsDetail": {
+        "message": "आपल्या संपर्काला आपला IP पत्ता कळू न देण्यासाठी सर्व कॉल Signal सर्व्हर वरून रीले करा. सक्षम केल्याने कॉल दर्जा कमी होईल.",
+        "description": "Details describing the always relay calls setting"
     },
     "permissions": {
         "message": "परवानग्या",
         "description": "Header for permissions section of settings"
     },
     "mediaPermissionsDescription": {
-        "message": "कॅमेरा आणि मायक्रोफोनला अॅक्सेसची अनुमती द्या",
+        "message": "Allow access to the microphone",
+        "description": "Description of the media permission description"
+    },
+    "mediaCameraPermissionsDescription": {
+        "message": "Allow access to the camera",
         "description": "Description of the media permission description"
     },
     "general": {
@@ -1142,6 +1190,14 @@
     "deleteAllDataProgress": {
         "message": "डिसकनेक्ट करत आहे आणि सर्व डेटा हटवत आहे",
         "description": "Message shown to user when app is disconnected and data deleted"
+    },
+    "deleteOldIndexedDBData": {
+        "message": "You have obsolete data from a prior installation of Signal Desktop. If you choose to continue, it will be deleted and you will start from scratch.",
+        "description": "Shown if user last ran Signal Desktop before October 2018"
+    },
+    "deleteOldData": {
+        "message": "Delete Old Data",
+        "description": "Button to make the delete happen"
     },
     "notifications": {
         "message": "सूचना",
@@ -1255,6 +1311,10 @@
         "message": "पाठविणे अयशस्वी",
         "description": "Shown on outgoing message if it fails to send"
     },
+    "partiallySent": {
+        "message": "Partially sent, click for details",
+        "description": "Shown on outgoing message if it is partially sent"
+    },
     "showMore": {
         "message": "तपशील",
         "description": "Displays the details of a key change"
@@ -1360,7 +1420,7 @@
         "description": "Brief message shown when trying to message a blocked group"
     },
     "youChangedTheTimer": {
-        "message": "आपण हरवणारे संदेश टायमर $time$ वर सेट केले",
+        "message": "You set the disappearing message time to $time$.",
         "description": "Message displayed when you change the message expiration timer in a conversation.",
         "placeholders": {
             "time": {
@@ -1370,7 +1430,7 @@
         }
     },
     "timerSetOnSync": {
-        "message": "हरवणारे संदेश टायमर $time$ वर अद्यतनित",
+        "message": "Updated the disappearing message time to $time$.",
         "description": "Message displayed when timer is set on initial link of desktop device.",
         "placeholders": {
             "time": {
@@ -1380,7 +1440,7 @@
         }
     },
     "theyChangedTheTimer": {
-        "message": "$name$ ने हरवणारे संदेश टायमर $time$ वर सेट केले",
+        "message": "$name$ set the disappearing message time to $time$.",
         "description": "Message displayed when someone else changes the message expiration timer in a conversation.",
         "placeholders": {
             "name": {
@@ -1498,7 +1558,7 @@
         "description": "Displayed in the left pane when the timer is turned off"
     },
     "disabledDisappearingMessages": {
-        "message": "$name$ ने हरवणारे संदेश अक्षम केले",
+        "message": "$name$ disabled disappearing messages.",
         "description": "Displayed in the conversation list when the timer is turned off",
         "placeholders": {
             "name": {
@@ -1508,7 +1568,7 @@
         }
     },
     "youDisabledDisappearingMessages": {
-        "message": "आपण हरवणारे संदेश अक्षम केलेत",
+        "message": "आपण नाहीसे होणारे संदेश अक्षम केले.",
         "description": "Displayed in the conversation list when the timer is turned off"
     },
     "timerSetTo": {
@@ -1525,9 +1585,57 @@
         "message": "ऑडिओ सूचना प्ले करा",
         "description": "Description for audio notification setting"
     },
+    "callRingtoneNotificationDescription": {
+        "message": "Play calling sounds",
+        "description": "Description for call ringtone notification setting"
+    },
+    "callSystemNotificationDescription": {
+        "message": "Show notifications for calls",
+        "description": "Description for call notification setting"
+    },
+    "incomingCallNotificationDescription": {
+        "message": "Enable incoming calls",
+        "description": "Description for incoming calls setting"
+    },
+    "contactChangedProfileName": {
+        "message": "$sender$ changed their profile name from $oldProfile$ to $newProfile$.",
+        "description": "Description for incoming calls setting",
+        "placeholders": {
+            "sender": {
+                "content": "$1",
+                "example": "Bob"
+            },
+            "oldProfile": {
+                "content": "$2",
+                "example": ".x8Skillz8x."
+            },
+            "newProfile": {
+                "content": "$3",
+                "example": "Bob Smith"
+            }
+        }
+    },
+    "changedProfileName": {
+        "message": "$oldProfile$ changed their profile name to $newProfile$.",
+        "description": "Shown when a contact not in your address book changes their profile name",
+        "placeholders": {
+            "oldProfile": {
+                "content": "$2",
+                "example": ".x8Skillz8x."
+            },
+            "newProfile": {
+                "content": "$3",
+                "example": "Bob Smith"
+            }
+        }
+    },
     "safetyNumberChanged": {
         "message": "सुरक्षितता नंबर बदलला आहे",
         "description": "A notification shown in the conversation when a contact reinstalls"
+    },
+    "safetyNumberChanges": {
+        "message": "Safety Number Changes",
+        "description": "Title for safety number changed modal"
     },
     "safetyNumberChangedGroup": {
         "message": "$name$ सोबतचा सुरक्षितता नंबर बदलला आहे",
@@ -1544,10 +1652,10 @@
         "description": "Label on button included with safety number change notification in the conversation"
     },
     "yourSafetyNumberWith": {
-        "message": "$name$ सोबतचा आपला सुरक्षितता नंबर:",
+        "message": "Your safety number with $name1$:",
         "description": "Heading for safety number view",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
                 "example": "John"
             }
@@ -1568,6 +1676,10 @@
     "noteToSelf": {
         "message": "स्वतःला संदेश",
         "description": "Name for the conversation with your own phone number"
+    },
+    "noteToSelfHero": {
+        "message": "या संभाषणामध्ये आपण स्वतःसाठी टिपा जोडू शकता. जर आपल्या खात्यामध्ये लिंक केलेले डिव्हाईस असतील, तर नवीन टिपा संकलित केल्या जातील. ",
+        "description": "Description for the Note to Self conversation"
     },
     "hideMenuBar": {
         "message": "मेनू पट्टी लपवा",
@@ -1670,7 +1782,7 @@
         }
     },
     "youJoinedTheGroup": {
-        "message": "You joined the group.",
+        "message": "आपण गटात सामील झालात.",
         "description": "Shown in the conversation history when you are added to a group."
     },
     "joinedTheGroup": {
@@ -1692,6 +1804,10 @@
                 "example": "Alice, Bob"
             }
         }
+    },
+    "ConversationListItem--message-request": {
+        "message": "संदेश विनंती",
+        "description": "Preview shown for conversation if the user has not yet accepted an incoming message request"
     },
     "ConversationListItem--draft-prefix": {
         "message": "मसुदा:",
@@ -1716,6 +1832,10 @@
     "message--getDescription--disappearing-video": {
         "message": "View-once Video",
         "description": "Shown in notifications and in the left pane when a message is a view once video."
+    },
+    "message--deletedForEveryone": {
+        "message": "हा संदेश हटविला गेला.",
+        "description": "Shown in a message's bubble when the message has been deleted for everyone."
     },
     "stickers--toast--InstallFailed": {
         "message": "स्टिकर पॅक स्थापित करू शकले नाही",
@@ -1864,7 +1984,7 @@
         "description": "Text shown on outgoing messages with with individual timers (inaccessble)"
     },
     "Message--tap-to-view--incoming--expired-toast": {
-        "message": "You already viewed this message.",
+        "message": "हा संदेश आपण आधीच पाहिला आहे.",
         "description": "Shown when user clicks on an expired incoming view-once bubble"
     },
     "Message--tap-to-view--outgoing--expired-toast": {
@@ -2003,6 +2123,10 @@
         "message": "सर्व ड्राफ्ट संलग्न काढा",
         "description": "Shown in the shortcuts guide"
     },
+    "Keyboard--conversation-by-index": {
+        "message": "Jump to conversation",
+        "description": "A shortcut allowing direct navigation to conversations 1 to 9 in list"
+    },
     "Keyboard--Key--ctrl": {
         "message": "Ctrl",
         "description": "Key shown in shortcut combination in shortcuts guide"
@@ -2022,6 +2146,14 @@
     "Keyboard--Key--enter": {
         "message": "प्रविष्ट करा",
         "description": "Key shown in shortcut combination in shortcuts guide"
+    },
+    "Keyboard--Key--tab": {
+        "message": "Tab",
+        "description": "Key shown in shortcut combination in shortcuts guide"
+    },
+    "Keyboard--Key--one-to-nine-range": {
+        "message": "1 to 9",
+        "description": "Expresses that 1, 2, 3, up to 9 are available shortcut keys"
     },
     "Keyboard--header": {
         "message": "Keyboard Shortcuts",
@@ -2049,6 +2181,18 @@
     },
     "Keyboard--close-curent-conversation": {
         "message": "वर्तमान संभाषण बंद करा",
+        "description": "Shown in the shortcuts guide"
+    },
+    "Keyboard--calling-header": {
+        "message": "कॉलिंग",
+        "description": "Header of the keyboard shortcuts guide - calling section"
+    },
+    "Keyboard--toggle-audio": {
+        "message": "Toggle mute on and off",
+        "description": "Shown in the shortcuts guide"
+    },
+    "Keyboard--toggle-video": {
+        "message": "Toggle video on and off",
         "description": "Shown in the shortcuts guide"
     },
     "close-popup": {
@@ -2289,9 +2433,331 @@
         "message": "Failed to send reaction. Please try again.",
         "description": "Shown when a reaction fails to send"
     },
+    "ReactionsViewer--more": {
+        "message": "More",
+        "description": "Use in the reaction picker as the alt text for the 'more' button"
+    },
     "ReactionsViewer--all": {
         "message": "सर्व",
         "description": "Shown in reaction viewer as the title for the 'all' category"
+    },
+    "MessageRequests--message-direct": {
+        "message": "Let $name$ message you and share your name and photo with them? They won’t know you’ve seen their messages until you accept.",
+        "description": "Shown as the message for a message request in a direct message",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce"
+            }
+        }
+    },
+    "MessageRequests--message-direct-blocked": {
+        "message": "Let $name$ message you and share your name and photo with them? You won't receive any messages until you unblock them.",
+        "description": "Shown as the message for a message request in a direct message with a blocked account",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce"
+            }
+        }
+    },
+    "MessageRequests--message-group": {
+        "message": "Join this group and share your name and photo with its members? They won’t know you’ve seen their messages until you accept.",
+        "description": "Shown as the message for a message request in a group",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--message-group-blocked": {
+        "message": "Unblock this group and share your name and photo with its members? You won't receive any messages until you unblock them.",
+        "description": "Shown as the message for a message request in a blocked group"
+    },
+    "MessageRequests--block": {
+        "message": "अवरोधित करा",
+        "description": "Shown as a button to let the user block a message request"
+    },
+    "MessageRequests--unblock": {
+        "message": "अनब्लॉक करा",
+        "description": "Shown as a button to let the user unblock a message request"
+    },
+    "MessageRequests--unblock-confirm-title": {
+        "message": "Unblock $name$?",
+        "description": "Shown as a button to let the user unblock a message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--unblock-direct-confirm-body": {
+        "message": "आपण एकमेकांना संदेश पाठवू आणि कॉल करू शकाल.",
+        "description": "Shown as the body in the confirmation modal for unblocking a private message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--unblock-group-confirm-body": {
+        "message": "Group members will be able to add your to this group again.",
+        "description": "Shown as the body in the confirmation modal for unblocking a group message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--block-and-delete": {
+        "message": "अवरोधित करा आणि हटवा",
+        "description": "Shown as a button to let the user block and delete a message request"
+    },
+    "MessageRequests--block-direct-confirm-title": {
+        "message": "Block $name$?",
+        "description": "Shown as the title in the confirmation modal for blocking a private message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--block-direct-confirm-body": {
+        "message": "Blocked people won't be able to call you or send you mesages.",
+        "description": "Shown as the body in the confirmation modal for blocking a private message request"
+    },
+    "MessageRequests--block-group-confirm-title": {
+        "message": "Block and Leave $group$?",
+        "description": "Shown as the title in the confirmation modal for blocking a group message request",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "MessageRequests--block-group-confirm-body": {
+        "message": "You will no longer receive messages or updates from this group and members won't be able to add you to this group again.",
+        "description": "Shown as the body in the confirmation modal for blocking a group message request"
+    },
+    "MessageRequests--delete": {
+        "message": "हटवा",
+        "description": "Shown as a button to let the user delete any message request"
+    },
+    "MessageRequests--delete-direct-confirm-title": {
+        "message": "संभाषण काढून टाकायचे?",
+        "description": "Shown as the title in the confirmation modal for deleting a private message request"
+    },
+    "MessageRequests--delete-direct-confirm-body": {
+        "message": "हे संभाषण आपल्या सर्व डिव्हाईस यांवरून हटविले जाईल.",
+        "description": "Shown as the body in the confirmation modal for deleting a private message request"
+    },
+    "MessageRequests--delete-group-confirm-title": {
+        "message": "Delete and Leave $group$?",
+        "description": "Shown as the title in the confirmation modal for deleting a group message request",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "MessageRequests--delete-direct": {
+        "message": "हटवा",
+        "description": "Shown as a button to let the user delete a direct message request"
+    },
+    "MessageRequests--delete-group": {
+        "message": "हटवा आणि सोडा",
+        "description": "Shown as a button to let the user delete a group message request"
+    },
+    "MessageRequests--delete-group-confirm-body": {
+        "message": "आपण हे गट सोडाल, आणि ते आपल्या सर्व डिव्हाईस वरून हटविले जाईल.",
+        "description": "Shown as the body in the confirmation modal for deleting a group message request"
+    },
+    "MessageRequests--accept": {
+        "message": "स्वीकारा",
+        "description": "Shown as a button to let the user accept a message request"
+    },
+    "ConversationHero--members": {
+        "message": "$count$ members",
+        "description": "Specifies the number of members in a group conversation",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "22"
+            }
+        }
+    },
+    "ConversationHero--members-1": {
+        "message": "1 सदस्य",
+        "description": "Specifies the number of members in a group conversation when there is one member",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "22"
+            }
+        }
+    },
+    "ConversationHero--membership-1": {
+        "message": "Member of $group$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of a mutual group",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            }
+        }
+    },
+    "ConversationHero--membership-2": {
+        "message": "Member of $group1$ and $group2$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least two mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            }
+        }
+    },
+    "ConversationHero--membership-3": {
+        "message": "Member of $group1$, $group2$, and $group3$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least three mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            },
+            "group3": {
+                "content": "$3",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "ConversationHero--membership-extra": {
+        "message": "Member of $group1$, $group2$, $group3$ and $remainingCount$ more.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least three mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            },
+            "group3": {
+                "content": "$3",
+                "example": "Friends 🌿"
+            },
+            "remainingCount": {
+                "content": "$4",
+                "example": "3"
+            }
+        }
+    },
+    "ConversationHero--membership-added": {
+        "message": "$name$ added you to the group.",
+        "description": "Shown Indicates that you were added to a group by a given individual.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Jeff Smith"
+            }
+        }
+    },
+    "acceptCall": {
+        "message": "उत्तर",
+        "description": "Shown in tooltip for the button to accept a call (audio or video)"
+    },
+    "acceptCallWithoutVideo": {
+        "message": "Answer without video",
+        "description": "Shown in tooltip for the button to accept a video call without video"
+    },
+    "declineCall": {
+        "message": "Decline",
+        "description": "Shown in tooltip for the button to decline a call (audio or video)"
+    },
+    "declinedIncomingAudioCall": {
+        "message": "You declined an audio call",
+        "description": "Shown in conversation history when you declined an incoming audio call"
+    },
+    "declinedIncomingVideoCall": {
+        "message": "You declined a video call",
+        "description": "Shown in conversation history when you declined an incoming video call"
+    },
+    "acceptedIncomingAudioCall": {
+        "message": "Incoming audio call",
+        "description": "Shown in conversation history when you accepted an incoming audio call"
+    },
+    "acceptedIncomingVideoCall": {
+        "message": "Incoming video call",
+        "description": "Shown in conversation history when you accepted an incoming video call"
+    },
+    "missedIncomingAudioCall": {
+        "message": "Missed audio call",
+        "description": "Shown in conversation history when you missed an incoming audio call"
+    },
+    "missedIncomingVideoCall": {
+        "message": "Missed video call",
+        "description": "Shown in conversation history when you missed an incoming video call"
+    },
+    "acceptedOutgoingAudioCall": {
+        "message": "Outgoing audio call",
+        "description": "Shown in conversation history when you made an outgoing audio call"
+    },
+    "acceptedOutgoingVideoCall": {
+        "message": "Outgoing video call",
+        "description": "Shown in conversation history when you made an outgoing video call"
+    },
+    "missedOrDeclinedOutgoingAudioCall": {
+        "message": "Unanswered audio call",
+        "description": "Shown in conversation history when your audio call is missed or declined"
+    },
+    "missedOrDeclinedOutgoingVideoCall": {
+        "message": "Unanswered video call",
+        "description": "Shown in conversation history when your video call is missed or declined"
+    },
+    "incomingAudioCall": {
+        "message": "Incoming audio call...",
+        "description": "Shown in both the incoming call bar and notification for an incoming audio call"
+    },
+    "incomingVideoCall": {
+        "message": "Incoming video call...",
+        "description": "Shown in both the incoming call bar and notification for an incoming video call"
+    },
+    "outgoingCallPrering": {
+        "message": "Calling...",
+        "description": "Shown in the call screen when placing an outgoing call that isn't ringing yet"
+    },
+    "outgoingCallRinging": {
+        "message": "Ringing...",
+        "description": "Shown in the call screen when placing an outgoing call that is now ringing"
+    },
+    "callReconnecting": {
+        "message": "Reconnecting...",
+        "description": "Shown in the call screen when the call is reconnecting due to network issues"
+    },
+    "callDuration": {
+        "message": "Signal $duration$",
+        "description": "Shown in the call screen to indicate how long the call has been connected",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "00:01"
+            }
+        }
     },
     "privacyPolicy": {
         "message": "अटी आणि गोपनीयता धोरण",

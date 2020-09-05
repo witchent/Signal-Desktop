@@ -27,11 +27,14 @@ import { CURRENT_SCHEMA_VERSION } from '../../js/modules/types/message';
 import { createBatcher } from '../util/batcher';
 
 import {
+  ConversationModelCollectionType,
+  ConversationModelType,
+  MessageModelCollectionType,
+  MessageModelType,
+} from '../model-types.d';
+
+import {
   AttachmentDownloadJobType,
-  BackboneConversationCollectionType,
-  BackboneConversationModelType,
-  BackboneMessageCollectionType,
-  BackboneMessageModelType,
   ClientInterface,
   ClientJobType,
   ConversationType,
@@ -133,6 +136,7 @@ const dataInterface: ClientInterface = {
   updateConversations,
   removeConversation,
 
+  eraseStorageIdFromConversations,
   getAllConversations,
   getAllConversationIds,
   getAllPrivateConversations,
@@ -159,7 +163,10 @@ const dataInterface: ClientInterface = {
   getTapToViewMessagesNeedingErase,
   getOlderMessagesByConversation,
   getNewerMessagesByConversation,
+  getLastConversationActivity,
+  getLastConversationPreview,
   getMessageMetricsForConversation,
+  migrateConversationMessages,
 
   getUnprocessedCount,
   getAllUnprocessed,
@@ -727,7 +734,7 @@ async function saveConversations(array: Array<ConversationType>) {
 
 async function getConversationById(
   id: string,
-  { Conversation }: { Conversation: BackboneConversationModelType }
+  { Conversation }: { Conversation: typeof ConversationModelType }
 ) {
   const data = await channels.getConversationById(id);
 
@@ -757,7 +764,7 @@ async function updateConversations(array: Array<ConversationType>) {
 
 async function removeConversation(
   id: string,
-  { Conversation }: { Conversation: BackboneConversationModelType }
+  { Conversation }: { Conversation: typeof ConversationModelType }
 ) {
   const existing = await getConversationById(id, { Conversation });
 
@@ -774,11 +781,15 @@ async function _removeConversations(ids: Array<string>) {
   await channels.removeConversation(ids);
 }
 
+async function eraseStorageIdFromConversations() {
+  await channels.eraseStorageIdFromConversations();
+}
+
 async function getAllConversations({
   ConversationCollection,
 }: {
-  ConversationCollection: BackboneConversationCollectionType;
-}) {
+  ConversationCollection: typeof ConversationModelCollectionType;
+}): Promise<ConversationModelCollectionType> {
   const conversations = await channels.getAllConversations();
 
   const collection = new ConversationCollection();
@@ -796,7 +807,7 @@ async function getAllConversationIds() {
 async function getAllPrivateConversations({
   ConversationCollection,
 }: {
-  ConversationCollection: BackboneConversationCollectionType;
+  ConversationCollection: typeof ConversationModelCollectionType;
 }) {
   const conversations = await channels.getAllPrivateConversations();
 
@@ -811,7 +822,7 @@ async function getAllGroupsInvolvingId(
   {
     ConversationCollection,
   }: {
-    ConversationCollection: BackboneConversationCollectionType;
+    ConversationCollection: typeof ConversationModelCollectionType;
   }
 ) {
   const conversations = await channels.getAllGroupsInvolvingId(id);
@@ -860,8 +871,8 @@ async function searchMessagesInConversation(
 
 // Message
 
-async function getMessageCount() {
-  return channels.getMessageCount();
+async function getMessageCount(conversationId?: string) {
+  return channels.getMessageCount(conversationId);
 }
 
 async function saveMessage(
@@ -869,7 +880,7 @@ async function saveMessage(
   {
     forceSave,
     Message,
-  }: { forceSave?: boolean; Message: BackboneMessageModelType }
+  }: { forceSave?: boolean; Message: typeof MessageModelType }
 ) {
   const id = await channels.saveMessage(_cleanData(data), { forceSave });
   Message.updateTimers();
@@ -886,7 +897,7 @@ async function saveMessages(
 
 async function removeMessage(
   id: string,
-  { Message }: { Message: BackboneMessageModelType }
+  { Message }: { Message: typeof MessageModelType }
 ) {
   const message = await getMessageById(id, { Message });
 
@@ -905,7 +916,7 @@ async function _removeMessages(ids: Array<string>) {
 
 async function getMessageById(
   id: string,
-  { Message }: { Message: BackboneMessageModelType }
+  { Message }: { Message: typeof MessageModelType }
 ) {
   const message = await channels.getMessageById(id);
   if (!message) {
@@ -919,7 +930,7 @@ async function getMessageById(
 async function _getAllMessages({
   MessageCollection,
 }: {
-  MessageCollection: BackboneMessageCollectionType;
+  MessageCollection: typeof MessageModelCollectionType;
 }) {
   const messages = await channels._getAllMessages();
 
@@ -944,7 +955,7 @@ async function getMessageBySender(
     sourceDevice: string;
     sent_at: number;
   },
-  { Message }: { Message: BackboneMessageModelType }
+  { Message }: { Message: typeof MessageModelType }
 ) {
   const messages = await channels.getMessageBySender({
     source,
@@ -961,7 +972,9 @@ async function getMessageBySender(
 
 async function getUnreadByConversation(
   conversationId: string,
-  { MessageCollection }: { MessageCollection: BackboneMessageCollectionType }
+  {
+    MessageCollection,
+  }: { MessageCollection: typeof MessageModelCollectionType }
 ) {
   const messages = await channels.getUnreadByConversation(conversationId);
 
@@ -977,11 +990,13 @@ async function getOlderMessagesByConversation(
   {
     limit = 100,
     receivedAt = Number.MAX_VALUE,
+    messageId,
     MessageCollection,
   }: {
     limit?: number;
     receivedAt?: number;
-    MessageCollection: BackboneMessageCollectionType;
+    messageId?: string;
+    MessageCollection: typeof MessageModelCollectionType;
   }
 ) {
   const messages = await channels.getOlderMessagesByConversation(
@@ -989,6 +1004,7 @@ async function getOlderMessagesByConversation(
     {
       limit,
       receivedAt,
+      messageId,
     }
   );
 
@@ -1003,7 +1019,7 @@ async function getNewerMessagesByConversation(
   }: {
     limit?: number;
     receivedAt?: number;
-    MessageCollection: BackboneMessageCollectionType;
+    MessageCollection: typeof MessageModelCollectionType;
   }
 ) {
   const messages = await channels.getNewerMessagesByConversation(
@@ -1016,6 +1032,32 @@ async function getNewerMessagesByConversation(
 
   return new MessageCollection(handleMessageJSON(messages));
 }
+async function getLastConversationActivity(
+  conversationId: string,
+  options: {
+    Message: typeof MessageModelType;
+  }
+): Promise<MessageModelType | undefined> {
+  const { Message } = options;
+  const result = await channels.getLastConversationActivity(conversationId);
+  if (result) {
+    return new Message(result);
+  }
+  return;
+}
+async function getLastConversationPreview(
+  conversationId: string,
+  options: {
+    Message: typeof MessageModelType;
+  }
+): Promise<MessageModelType | undefined> {
+  const { Message } = options;
+  const result = await channels.getLastConversationPreview(conversationId);
+  if (result) {
+    return new Message(result);
+  }
+  return;
+}
 async function getMessageMetricsForConversation(conversationId: string) {
   const result = await channels.getMessageMetricsForConversation(
     conversationId
@@ -1023,10 +1065,18 @@ async function getMessageMetricsForConversation(conversationId: string) {
 
   return result;
 }
+async function migrateConversationMessages(
+  obsoleteId: string,
+  currentId: string
+) {
+  await channels.migrateConversationMessages(obsoleteId, currentId);
+}
 
 async function removeAllMessagesInConversation(
   conversationId: string,
-  { MessageCollection }: { MessageCollection: BackboneMessageCollectionType }
+  {
+    MessageCollection,
+  }: { MessageCollection: typeof MessageModelCollectionType }
 ) {
   let messages;
   do {
@@ -1041,12 +1091,12 @@ async function removeAllMessagesInConversation(
       return;
     }
 
-    const ids = messages.map((message: BackboneMessageModelType) => message.id);
+    const ids = messages.map((message: MessageModelType) => message.id);
 
     // Note: It's very important that these models are fully hydrated because
     //   we need to delete all associated on-disk files along with the database delete.
     await Promise.all(
-      messages.map((message: BackboneMessageModelType) => message.cleanup())
+      messages.map(async (message: MessageModelType) => message.cleanup())
     );
 
     await channels.removeMessage(ids);
@@ -1055,7 +1105,9 @@ async function removeAllMessagesInConversation(
 
 async function getMessagesBySentAt(
   sentAt: number,
-  { MessageCollection }: { MessageCollection: BackboneMessageCollectionType }
+  {
+    MessageCollection,
+  }: { MessageCollection: typeof MessageModelCollectionType }
 ) {
   const messages = await channels.getMessagesBySentAt(sentAt);
 
@@ -1065,7 +1117,7 @@ async function getMessagesBySentAt(
 async function getExpiredMessages({
   MessageCollection,
 }: {
-  MessageCollection: BackboneMessageCollectionType;
+  MessageCollection: typeof MessageModelCollectionType;
 }) {
   const messages = await channels.getExpiredMessages();
 
@@ -1075,7 +1127,7 @@ async function getExpiredMessages({
 async function getOutgoingWithoutExpiresAt({
   MessageCollection,
 }: {
-  MessageCollection: BackboneMessageCollectionType;
+  MessageCollection: typeof MessageModelCollectionType;
 }) {
   const messages = await channels.getOutgoingWithoutExpiresAt();
 
@@ -1085,7 +1137,7 @@ async function getOutgoingWithoutExpiresAt({
 async function getNextExpiringMessage({
   Message,
 }: {
-  Message: BackboneMessageModelType;
+  Message: typeof MessageModelType;
 }) {
   const message = await channels.getNextExpiringMessage();
 
@@ -1099,7 +1151,7 @@ async function getNextExpiringMessage({
 async function getNextTapToViewMessageToAgeOut({
   Message,
 }: {
-  Message: BackboneMessageModelType;
+  Message: typeof MessageModelType;
 }) {
   const message = await channels.getNextTapToViewMessageToAgeOut();
   if (!message) {
@@ -1111,7 +1163,7 @@ async function getNextTapToViewMessageToAgeOut({
 async function getTapToViewMessagesNeedingErase({
   MessageCollection,
 }: {
-  MessageCollection: BackboneMessageCollectionType;
+  MessageCollection: typeof MessageModelCollectionType;
 }) {
   const messages = await channels.getTapToViewMessagesNeedingErase();
 

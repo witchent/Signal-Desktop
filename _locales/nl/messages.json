@@ -3,6 +3,10 @@
         "message": "Foutmelding kopiëren en afsluiten",
         "description": "Shown in the top-level error popup, allowing user to copy the error text and close the app"
     },
+    "unknownContact": {
+        "message": "Onbekend contactpersoon",
+        "description": "Shown as the name of a contact if we don't have any displayable information about them"
+    },
     "unknownGroup": {
         "message": "Onbekende groep",
         "description": "Shown as the name of a group if we don't have any information about it"
@@ -40,7 +44,7 @@
         "description": "The label that is used for the Help menu in the program main menu. The '&' indicates that the following letter will be used as the keyboard 'shortcut letter' for accessing the menu with the Alt-<letter> combination."
     },
     "mainMenuSettings": {
-        "message": "Voorkeuren…",
+        "message": "Voorkeuren …",
         "description": "The label that is used for the Preferences menu in the program main menu. This should be consistent with the standard naming for ‘Preferences’ on the operating system."
     },
     "appMenuHide": {
@@ -156,15 +160,15 @@
         "description": "One of the menu options available in the Avatar Popup menu"
     },
     "loading": {
-        "message": "Bezig met laden…",
+        "message": "Bezig met laden …",
         "description": "Message shown on the loading screen before we've loaded any messages"
     },
     "optimizingApplication": {
-        "message": "Toepassing aan het optimaliseren…",
+        "message": "Toepassing aan het optimaliseren …",
         "description": "Message shown on the loading screen while we are doing application optimizations"
     },
     "migratingToSQLCipher": {
-        "message": "Bezig met optimaliseren van berichten… $status$ voltooid.",
+        "message": "Bezig met optimaliseren van berichten … $status$ voltooid.",
         "description": "Message shown on the loading screen while we are doing application optimizations",
         "placeholders": {
             "status": {
@@ -246,11 +250,11 @@
         "description": "Message shown as the export location if we didn't capture the target directory"
     },
     "upgradingDatabase": {
-        "message": "De databank wordt opgewaardeerd. Dit kan even duren…",
+        "message": "De databank wordt opgewaardeerd. Dit kan even duren …",
         "description": "Message shown on the loading screen when we're changing database structure on first run of a new version"
     },
     "loadingMessages": {
-        "message": "Berichten worden geladen, $count$ tot nu toe…",
+        "message": "Berichten worden geladen, $count$ tot nu toe …",
         "description": "Message shown on the loading screen when we're catching up on the backlog of messages",
         "placeholders": {
             "count": {
@@ -337,50 +341,34 @@
         "message": "Je veiligheidsnummers met deze groepsleden zijn veranderd sinds de laatste verificatie. Klik op een groepslid om je nieuwe veiligheidsnummer met hem te bekijken.",
         "description": "When there are multiple previously-verified group members with safety number changes, a banner will be shown. The list of contacts with safety number changes is shown, and this text introduces that list."
     },
-    "changedSinceVerifiedMultiple": {
-        "message": "Je veiligheidsnummers met meerdere groepsleden zijn veranderd sinds de laatste verificatie. Dit kan betekenen dat iemand je gesprekken probeert te onderscheppen, of gewoonweg dat sommige groepsleden Signal opnieuw hebben geïnstalleerd.",
-        "description": "Shown on confirmation dialog when user attempts to send a message"
-    },
-    "changedSinceVerified": {
-        "message": "Je veiligheidsnummer met $name$ is veranderd sinds de laatste verificatie. Dit kan betekenen dat iemand je gesprekken probeert te onderscheppen, of gewoonweg dat $name$ Signal opnieuw heeft geïnstalleerd.",
-        "description": "Shown on confirmation dialog when user attempts to send a message",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Bob"
-            }
-        }
-    },
     "changedRightAfterVerify": {
-        "message": "Het veiligheidsnummer dat je wilt verifiëren is veranderd. Controleer je nieuwe veiligheidsnummer met $name$. Let op: dit kan betekenen dat iemand je gesprekken probeert te onderscheppen, of gewoonweg dat $name$ Signal opnieuw heeft geïnstalleerd.",
+        "message": "The safety number you are trying to verify has changed. Please review your new safety number with $name1$. Remember, this change could mean that someone is trying to intercept your communication or that $name2$ has simply reinstalled Signal.",
         "description": "Shown on the safety number screen when the user has selected to verify/unverify a contact's safety number, and we immediately discover a safety number change",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
+                "example": "Bob"
+            },
+            "name2": {
+                "content": "$2",
                 "example": "Bob"
             }
         }
     },
-    "changedRecentlyMultiple": {
-        "message": "Je veiligheidsnummers met meerdere groepsleden zijn recentelijk veranderd. Dit kan betekenen dat iemand je gesprekken probeert te onderscheppen, of gewoonweg dat sommige groepsleden Signal opnieuw hebben geïnstalleerd.",
+    "changedVerificationWarning": {
+        "message": "De volgende personen hebben mogelijk de app opnieuw geïnstalleerd of hebben een ander apparaat in gebruik genomen. Verifieer jullie veiligheidsnummers om zeker te zijn dat je met de juiste personen communiceert.",
         "description": "Shown on confirmation dialog when user attempts to send a message"
     },
-    "changedRecently": {
-        "message": "Je veiligheidsnummer met $name$ is onlangs veranderd. Dit kan betekenen dat iemand je gesprekken probeert te onderscheppen, of gewoonweg dat $name$ Signal opnieuw heeft geïnstalleerd.",
-        "description": "Shown on confirmation dialog when user attempts to send a message",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Bob"
-            }
-        }
-    },
     "identityKeyErrorOnSend": {
-        "message": "Je veiligheidsnummer met $name$ is veranderd. Dit kan betekenen dat iemand je gesprekken probeert te onderscheppen, of gewoonweg dat $name$ Signal opnieuw heeft geïnstalleerd. Het wordt aanbevolen je nieuwe veiligheidsnummer met dit contactpersoon te verifiëren.",
+        "message": "Your safety number with $name1$ has changed. This could either mean that someone is trying to intercept your communication or that $name2$ has simply reinstalled Signal. You may wish to verify your safety number with this contact.",
         "description": "Shown when user clicks on a failed recipient in the message detail view after an identity key change",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
+                "example": "Bob"
+            },
+            "name2": {
+                "content": "$2",
                 "example": "Bob"
             }
         }
@@ -410,6 +398,18 @@
     "debugLogError": {
         "message": "Er is iets misgegaan bij het uploaden. Voeg het logbestand handmatig toe aan een foutrapport op Github.",
         "description": ""
+    },
+    "debugLogCopy": {
+        "message": "Kopiëren",
+        "description": "Shown as the text for the copy button on the debug log screen"
+    },
+    "debugLogCopyAlt": {
+        "message": "Verwijzing naar klembord kopiëren",
+        "description": "Shown as the alt text for the copy button on the debug log screen"
+    },
+    "debugLogLinkCopied": {
+        "message": "De verwijzing is naar het klembord gekopieerd",
+        "description": "Shown in a taost to let the user know that the link to the debug log has been copied to their clipboard"
     },
     "reportIssue": {
         "message": "Meld een probleem",
@@ -524,7 +524,7 @@
         "description": "Shown in toast when user attempts to send .exe file, for example"
     },
     "loadingPreview": {
-        "message": "Voorbeeld laden…",
+        "message": "Voorbeeld laden …",
         "description": "Shown while Signal Desktop is fetching metadata for a url in composition area"
     },
     "stagedPreviewThumbnail": {
@@ -561,7 +561,7 @@
         "message": "Wanneer je een bijlage insluit die geen afbeelding is, is de limiet één bijlage per bericht.",
         "description": "An error popup when the user has attempted to add an attachment"
     },
-    "cannotMixImageAdnNonImageAttachments": {
+    "cannotMixImageAndNonImageAttachments": {
         "message": "Je kunt geen combinatie van afbeeldingen en niet-afbeeldingen insluiten als bijlagen van één bericht.",
         "description": "An error popup when the user has attempted to add an attachment"
     },
@@ -590,7 +590,7 @@
         "description": "Shown to allow the user to manually attempt a reconnect."
     },
     "connectingHangOn": {
-        "message": "Dit zou niet lang moeten duren…",
+        "message": "Dit zou niet lang moeten duren …",
         "description": "Subtext description for when the client is connecting to the server."
     },
     "offline": {
@@ -613,6 +613,10 @@
         "message": "Toetsenbord-snelkoppelingen weergeven",
         "description": "Item under the help menu, pops up a screen showing the application's keyboard shortcuts"
     },
+    "contactUs": {
+        "message": "Neem contact met ons op",
+        "description": "Item under the help menu, takes you to the contact us support page"
+    },
     "goToReleaseNotes": {
         "message": "Ga naar uitgaveopmerkingen",
         "description": "Item under the help menu, takes you to GitHub page for release notes"
@@ -625,9 +629,13 @@
         "message": "Ga naar ondersteuningspagina",
         "description": "Item under the Help menu, takes you to the support page"
     },
-    "menuReportIssue": {
-        "message": "Een probleem melden",
-        "description": "Item under the Help menu, takes you to GitHub new issue form (title case)"
+    "goToGithub": {
+        "message": "GitHub bezoeken",
+        "description": "Item under the Help menu, takes you to the GitHub repository for Signal Desktop"
+    },
+    "joinTheBeta": {
+        "message": "Aan bétaprogramma deelnemen",
+        "description": "Item under the Help menu, takes you to an article describing how to install the beta release of Signal Desktop"
     },
     "signalDesktopPreferences": {
         "message": "Signal Desktop-instellingen",
@@ -690,6 +698,10 @@
         "description": "Shown in the search left pane when no results were found",
         "placeholders": {
             "searchTerm": {
+                "content": "$1",
+                "example": "dog"
+            },
+            "conversationName": {
                 "content": "$2",
                 "example": "Friends"
             }
@@ -718,6 +730,10 @@
     "typingAlt": {
         "message": "Typ-animatie voor dit gesprek",
         "description": "Used as the 'title' attibute for the typing animation"
+    },
+    "contactInAddressBook": {
+        "message": "This person is in your contacts.",
+        "description": "Description of icon denoting that contact is from your address book"
     },
     "contactAvatarAlt": {
         "message": "Afbeelding voor contact $name$",
@@ -832,6 +848,14 @@
     "audioPermissionNeeded": {
         "message": "Om een audiobericht te versturen moet je Signal Desktop toegang tot de microfoon geven.",
         "description": "Shown if the user attempts to send an audio message without audio permssions turned on"
+    },
+    "audioCallingPermissionNeeded": {
+        "message": "For calling, you must allow Signal Desktop to access your microphone.",
+        "description": "Shown if the user attempts access the microphone for calling without audio permssions turned on"
+    },
+    "videoCallingPermissionNeeded": {
+        "message": "For video calling, you must allow Signal Desktop to access your camera.",
+        "description": "Shown if the user attempts access the camera for video calling without video permssions turned on"
     },
     "allowAccess": {
         "message": "Toegang geven",
@@ -957,8 +981,8 @@
         "message": "Veiligheidsnummer bekijken",
         "description": ""
     },
-    "viewAllMedia": {
-        "message": "Alle media bekijken",
+    "viewRecentMedia": {
+        "message": "Recente media weergeven",
         "description": "This is a menu item for viewing all media (images + video) in a conversation, using the imperative case, as in a command."
     },
     "verifyHelp": {
@@ -976,7 +1000,7 @@
         "description": ""
     },
     "moreInfo": {
-        "message": "Meer informatie…",
+        "message": "Meer informatie …",
         "description": "Shown on the drop-down menu for an individual message, takes you to message detail screen"
     },
     "retrySend": {
@@ -1020,7 +1044,7 @@
         "description": "Used for the icon layered on top of an image in message bubbles"
     },
     "addACaption": {
-        "message": "Voeg een bijschrift toe…",
+        "message": "Voeg een bijschrift toe …",
         "description": ""
     },
     "save": {
@@ -1083,20 +1107,44 @@
         "message": "Sorry, je hebt te veel apparaten gekoppeld. Probeer er enkele te verwijderen.",
         "description": ""
     },
-    "settings": {
-        "message": "Instellingen",
-        "description": "Menu item and header for global settings"
+    "installTooOld": {
+        "message": "Je moet Signal op dit apparaat bijwerken om Signal te kunnen koppelen aan je telefoon.",
+        "description": ""
+    },
+    "installErrorHeader": {
+        "message": "Er ging iets mis!",
+        "description": ""
+    },
+    "installTryAgain": {
+        "message": "Opnieuw proberen",
+        "description": ""
     },
     "theme": {
         "message": "Thema",
         "description": "Header for theme settings"
+    },
+    "calling": {
+        "message": "Bellen",
+        "description": "Header for calling options on the settings screen"
+    },
+    "alwaysRelayCallsDescription": {
+        "message": "Alle oproepen omleiden",
+        "description": "Description of the always relay calls setting"
+    },
+    "alwaysRelayCallsDetail": {
+        "message": "Om te voorkomen dat je gesprekspartner je IP-adres kan achterhalen worden Signal-oproepen met niet-contactpersonen altijd omgeleid via de Signal-server. Door deze optie in te schakelen wordt dat ook gedaan voor Signal-oproepen met contacten wie wel in je contactenlijst staan. Dit leidt echter tot een verminderde geluids- en videokwaliteit.",
+        "description": "Details describing the always relay calls setting"
     },
     "permissions": {
         "message": "Toestemmingen",
         "description": "Header for permissions section of settings"
     },
     "mediaPermissionsDescription": {
-        "message": "Geef toestemming om de camera en microfoon te gebruiken",
+        "message": "Allow access to the microphone",
+        "description": "Description of the media permission description"
+    },
+    "mediaCameraPermissionsDescription": {
+        "message": "Allow access to the camera",
         "description": "Description of the media permission description"
     },
     "general": {
@@ -1143,6 +1191,14 @@
         "message": "Verbinding wordt verbroken en alle gegevens worden verwijderd",
         "description": "Message shown to user when app is disconnected and data deleted"
     },
+    "deleteOldIndexedDBData": {
+        "message": "Je hebt nog overbodige gegevens op je apparaat van een Signal-Desktop installatie van voor oktober 2018. Als je er voor kiest om verder te gaan, dan zullen alle gegevens inclusief al je gesprekjen worden gewist van Signal-Desktop en zal je met een schone installatie beginnen.",
+        "description": "Shown if user last ran Signal Desktop before October 2018"
+    },
+    "deleteOldData": {
+        "message": "Oude gegevens wissen",
+        "description": "Button to make the delete happen"
+    },
     "notifications": {
         "message": "Meldingen",
         "description": "Header for notification settings"
@@ -1156,11 +1212,11 @@
         "description": "Label for disabling notifications"
     },
     "nameAndMessage": {
-        "message": "Zowel naam van afzender als berichtinhoud",
+        "message": "Zowel de naam van de afzender als berichtinhoud",
         "description": "Label for setting notifications to display name and message text"
     },
     "noNameOrMessage": {
-        "message": "Noch de naam van de afzender noch berichtinhoud",
+        "message": "Niet de naam van de afzender en geen berichtinhoud",
         "description": "Label for setting notifications to display no name and no message text"
     },
     "nameOnly": {
@@ -1255,6 +1311,10 @@
         "message": "Verzenden mislukt",
         "description": "Shown on outgoing message if it fails to send"
     },
+    "partiallySent": {
+        "message": "Partially sent, click for details",
+        "description": "Shown on outgoing message if it is partially sent"
+    },
     "showMore": {
         "message": "Details",
         "description": "Displays the details of a key change"
@@ -1300,7 +1360,7 @@
         "description": "Label for a button that syncs contacts and groups from your phone"
     },
     "syncing": {
-        "message": "Bezig met importeren…",
+        "message": "Bezig met importeren …",
         "description": "Label for a disabled sync button while sync is in progress."
     },
     "syncFailed": {
@@ -1360,7 +1420,7 @@
         "description": "Brief message shown when trying to message a blocked group"
     },
     "youChangedTheTimer": {
-        "message": "Je hebt de timer voor zelf-wissende berichten op $time$gezet",
+        "message": "You set the disappearing message time to $time$.",
         "description": "Message displayed when you change the message expiration timer in a conversation.",
         "placeholders": {
             "time": {
@@ -1370,7 +1430,7 @@
         }
     },
     "timerSetOnSync": {
-        "message": "De timer voor zelf-wissende berichten is bijgewerkt naar $time$",
+        "message": "Updated the disappearing message time to $time$.",
         "description": "Message displayed when timer is set on initial link of desktop device.",
         "placeholders": {
             "time": {
@@ -1380,7 +1440,7 @@
         }
     },
     "theyChangedTheTimer": {
-        "message": "$name$heeft de timer voor zelf-wissende berichten op $time$gezet",
+        "message": "$name$ set the disappearing message time to $time$.",
         "description": "Message displayed when someone else changes the message expiration timer in a conversation.",
         "placeholders": {
             "name": {
@@ -1442,7 +1502,7 @@
         "description": "Label for a selectable option in the message expiration timer menu"
     },
     "disappearingMessages": {
-        "message": "Zelf-wissende berichten",
+        "message": "Zelfwissende berichten",
         "description": "Conversation menu option to enable disappearing messages"
     },
     "timerOption_0_seconds_abbreviated": {
@@ -1494,11 +1554,11 @@
         "description": "Very short format indicating current timer setting in the conversation header"
     },
     "disappearingMessagesDisabled": {
-        "message": "Zelf-wissende berichten zijn uitgeschakeld",
+        "message": "Zelfwissende berichten zijn uitgeschakeld",
         "description": "Displayed in the left pane when the timer is turned off"
     },
     "disabledDisappearingMessages": {
-        "message": "$name$ heeft zelf-wissende berichten uitgeschakeld",
+        "message": "$name$ disabled disappearing messages.",
         "description": "Displayed in the conversation list when the timer is turned off",
         "placeholders": {
             "name": {
@@ -1508,7 +1568,7 @@
         }
     },
     "youDisabledDisappearingMessages": {
-        "message": "Je hebt zelf-wissende berichten uitgeschakeld",
+        "message": "Je hebt zelfwissende berichten uitgeschakeld.",
         "description": "Displayed in the conversation list when the timer is turned off"
     },
     "timerSetTo": {
@@ -1522,12 +1582,60 @@
         }
     },
     "audioNotificationDescription": {
-        "message": "Audiomelding afspelen",
+        "message": "Bij meldingen geluid afspelen",
         "description": "Description for audio notification setting"
+    },
+    "callRingtoneNotificationDescription": {
+        "message": "Play calling sounds",
+        "description": "Description for call ringtone notification setting"
+    },
+    "callSystemNotificationDescription": {
+        "message": "Show notifications for calls",
+        "description": "Description for call notification setting"
+    },
+    "incomingCallNotificationDescription": {
+        "message": "Enable incoming calls",
+        "description": "Description for incoming calls setting"
+    },
+    "contactChangedProfileName": {
+        "message": "$sender$ changed their profile name from $oldProfile$ to $newProfile$.",
+        "description": "Description for incoming calls setting",
+        "placeholders": {
+            "sender": {
+                "content": "$1",
+                "example": "Bob"
+            },
+            "oldProfile": {
+                "content": "$2",
+                "example": ".x8Skillz8x."
+            },
+            "newProfile": {
+                "content": "$3",
+                "example": "Bob Smith"
+            }
+        }
+    },
+    "changedProfileName": {
+        "message": "$oldProfile$ changed their profile name to $newProfile$.",
+        "description": "Shown when a contact not in your address book changes their profile name",
+        "placeholders": {
+            "oldProfile": {
+                "content": "$2",
+                "example": ".x8Skillz8x."
+            },
+            "newProfile": {
+                "content": "$3",
+                "example": "Bob Smith"
+            }
+        }
     },
     "safetyNumberChanged": {
         "message": "Het veiligheidsnummer is veranderd",
         "description": "A notification shown in the conversation when a contact reinstalls"
+    },
+    "safetyNumberChanges": {
+        "message": "Veiligheidsnummer veranderingen",
+        "description": "Title for safety number changed modal"
     },
     "safetyNumberChangedGroup": {
         "message": "Veiligheidsnummer met $name$ is veranderd",
@@ -1544,10 +1652,10 @@
         "description": "Label on button included with safety number change notification in the conversation"
     },
     "yourSafetyNumberWith": {
-        "message": "Je veiligheidsnummer met $name$:",
+        "message": "Your safety number with $name1$:",
         "description": "Heading for safety number view",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
                 "example": "John"
             }
@@ -1569,12 +1677,16 @@
         "message": "Notitie aan mezelf",
         "description": "Name for the conversation with your own phone number"
     },
+    "noteToSelfHero": {
+        "message": "Je kunt in dit gesprek notities voor jezelf achterlaten. Als je gebruik maakt van gekoppelde apparaten dan zullen notities worden gesynchroniseerd.",
+        "description": "Description for the Note to Self conversation"
+    },
     "hideMenuBar": {
         "message": "Menubalk verbergen",
         "description": "Label text for menu bar visibility setting"
     },
     "startConversation": {
-        "message": "Begin een nieuw gesprek…",
+        "message": "Begin een nieuw gesprek …",
         "description": "Label underneath number a user enters that is not an existing contact"
     },
     "notSupportedSMS": {
@@ -1693,6 +1805,10 @@
             }
         }
     },
+    "ConversationListItem--message-request": {
+        "message": "Gespreksverzoeken",
+        "description": "Preview shown for conversation if the user has not yet accepted an incoming message request"
+    },
     "ConversationListItem--draft-prefix": {
         "message": "Concept:",
         "description": "Prefix shown in italic in conversation view when a draft is saved"
@@ -1716,6 +1832,10 @@
     "message--getDescription--disappearing-video": {
         "message": "Eenmaligeweergave-video",
         "description": "Shown in notifications and in the left pane when a message is a view once video."
+    },
+    "message--deletedForEveryone": {
+        "message": "Dit bericht is gewist.",
+        "description": "Shown in a message's bubble when the message has been deleted for everyone."
     },
     "stickers--toast--InstallFailed": {
         "message": "Stickerpakket kon niet worden geïnstalleerd",
@@ -1774,7 +1894,7 @@
         "description": "Shown in the sticker picker when one or more stickers could not be downloaded."
     },
     "stickers--StickerPicker--DownloadPending": {
-        "message": "Stickerpakket wordt geïnstalleerd…",
+        "message": "Stickerpakket wordt geïnstalleerd …",
         "description": "Shown in the sticker picker when one or more stickers are still downloading."
     },
     "stickers--StickerPicker--Empty": {
@@ -2003,6 +2123,10 @@
         "message": "Alle concept-bijlagen verwijderen",
         "description": "Shown in the shortcuts guide"
     },
+    "Keyboard--conversation-by-index": {
+        "message": "Naar gesprek springen",
+        "description": "A shortcut allowing direct navigation to conversations 1 to 9 in list"
+    },
     "Keyboard--Key--ctrl": {
         "message": "Ctrl",
         "description": "Key shown in shortcut combination in shortcuts guide"
@@ -2022,6 +2146,14 @@
     "Keyboard--Key--enter": {
         "message": "Enter",
         "description": "Key shown in shortcut combination in shortcuts guide"
+    },
+    "Keyboard--Key--tab": {
+        "message": "Tab",
+        "description": "Key shown in shortcut combination in shortcuts guide"
+    },
+    "Keyboard--Key--one-to-nine-range": {
+        "message": "1 tot en met 9",
+        "description": "Expresses that 1, 2, 3, up to 9 are available shortcut keys"
     },
     "Keyboard--header": {
         "message": "Toetsenbord-snelkoppelingen",
@@ -2049,6 +2181,18 @@
     },
     "Keyboard--close-curent-conversation": {
         "message": "Huidig gesprek sluiten",
+        "description": "Shown in the shortcuts guide"
+    },
+    "Keyboard--calling-header": {
+        "message": "Bellen",
+        "description": "Header of the keyboard shortcuts guide - calling section"
+    },
+    "Keyboard--toggle-audio": {
+        "message": "Toggle mute on and off",
+        "description": "Shown in the shortcuts guide"
+    },
+    "Keyboard--toggle-video": {
+        "message": "Toggle video on and off",
         "description": "Shown in the shortcuts guide"
     },
     "close-popup": {
@@ -2154,7 +2298,7 @@
         "description": "Help text for the drop stage of the sticker creator"
     },
     "StickerCreator--MetaStage--title": {
-        "message": "Nog slechts enkele details…",
+        "message": "Nog slechts enkele details …",
         "description": "Title for the meta stage of the sticker creator"
     },
     "StickerCreator--MetaStage--Field--title": {
@@ -2289,9 +2433,331 @@
         "message": "Verzenden van reactie mislukt. Probeer het opnieuw.",
         "description": "Shown when a reaction fails to send"
     },
+    "ReactionsViewer--more": {
+        "message": "Meer reacties weergeven",
+        "description": "Use in the reaction picker as the alt text for the 'more' button"
+    },
     "ReactionsViewer--all": {
         "message": "Alles",
         "description": "Shown in reaction viewer as the title for the 'all' category"
+    },
+    "MessageRequests--message-direct": {
+        "message": "Let $name$ message you and share your name and photo with them? They won’t know you’ve seen their messages until you accept.",
+        "description": "Shown as the message for a message request in a direct message",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce"
+            }
+        }
+    },
+    "MessageRequests--message-direct-blocked": {
+        "message": "Let $name$ message you and share your name and photo with them? You won't receive any messages until you unblock them.",
+        "description": "Shown as the message for a message request in a direct message with a blocked account",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce"
+            }
+        }
+    },
+    "MessageRequests--message-group": {
+        "message": "Wil je berichten van deze groep ontvangen, en sta je toe dat alle leden van deze groep je profielnaam en -foto kunnen zien? De leden van deze groep zullen totdat je de gespreksuitnodiging aanvaardt niet kunnen zien dat je hun berichten hebt gelezen.",
+        "description": "Shown as the message for a message request in a group",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--message-group-blocked": {
+        "message": "Wil je weer berichten van deze groep ontvangen, en sta je toe dat alle leden van de groep je profielnaam en -foto kunnen zien? Je zult geen berichten ontvangen en je profiel zal voor de leden van deze groep niet worden bijgewerkt totdat je de groep hebt gedeblokkeerd.",
+        "description": "Shown as the message for a message request in a blocked group"
+    },
+    "MessageRequests--block": {
+        "message": "Iemand blokkeer",
+        "description": "Shown as a button to let the user block a message request"
+    },
+    "MessageRequests--unblock": {
+        "message": "Deblokkeren",
+        "description": "Shown as a button to let the user unblock a message request"
+    },
+    "MessageRequests--unblock-confirm-title": {
+        "message": "Unblock $name$?",
+        "description": "Shown as a button to let the user unblock a message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--unblock-direct-confirm-body": {
+        "message": "Jullie zullen elkaar weer berichten kunnen sturen en elkaar weer kunnen bellen via Signal.",
+        "description": "Shown as the body in the confirmation modal for unblocking a private message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--unblock-group-confirm-body": {
+        "message": "Group members will be able to add your to this group again.",
+        "description": "Shown as the body in the confirmation modal for unblocking a group message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--block-and-delete": {
+        "message": "Blokkeren en verwijderen",
+        "description": "Shown as a button to let the user block and delete a message request"
+    },
+    "MessageRequests--block-direct-confirm-title": {
+        "message": "Block $name$?",
+        "description": "Shown as the title in the confirmation modal for blocking a private message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--block-direct-confirm-body": {
+        "message": "Blocked people won't be able to call you or send you mesages.",
+        "description": "Shown as the body in the confirmation modal for blocking a private message request"
+    },
+    "MessageRequests--block-group-confirm-title": {
+        "message": "Block and Leave $group$?",
+        "description": "Shown as the title in the confirmation modal for blocking a group message request",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "MessageRequests--block-group-confirm-body": {
+        "message": "You will no longer receive messages or updates from this group and members won't be able to add you to this group again.",
+        "description": "Shown as the body in the confirmation modal for blocking a group message request"
+    },
+    "MessageRequests--delete": {
+        "message": "Een gesprek verwijder",
+        "description": "Shown as a button to let the user delete any message request"
+    },
+    "MessageRequests--delete-direct-confirm-title": {
+        "message": "Gesprek verwijderen?",
+        "description": "Shown as the title in the confirmation modal for deleting a private message request"
+    },
+    "MessageRequests--delete-direct-confirm-body": {
+        "message": "Dit gesprek zal worden gewist van al je apparaten.",
+        "description": "Shown as the body in the confirmation modal for deleting a private message request"
+    },
+    "MessageRequests--delete-group-confirm-title": {
+        "message": "Delete and Leave $group$?",
+        "description": "Shown as the title in the confirmation modal for deleting a group message request",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "MessageRequests--delete-direct": {
+        "message": "Een gesprek verwijder",
+        "description": "Shown as a button to let the user delete a direct message request"
+    },
+    "MessageRequests--delete-group": {
+        "message": "Verwijderen en verlaten",
+        "description": "Shown as a button to let the user delete a group message request"
+    },
+    "MessageRequests--delete-group-confirm-body": {
+        "message": "Je zult deze groep verlaten en het gesprek zal van al je apparaten worden gewist.",
+        "description": "Shown as the body in the confirmation modal for deleting a group message request"
+    },
+    "MessageRequests--accept": {
+        "message": "Een uitnodiging aanvaard",
+        "description": "Shown as a button to let the user accept a message request"
+    },
+    "ConversationHero--members": {
+        "message": "$count$ members",
+        "description": "Specifies the number of members in a group conversation",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "22"
+            }
+        }
+    },
+    "ConversationHero--members-1": {
+        "message": "1 lid",
+        "description": "Specifies the number of members in a group conversation when there is one member",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "22"
+            }
+        }
+    },
+    "ConversationHero--membership-1": {
+        "message": "Member of $group$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of a mutual group",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            }
+        }
+    },
+    "ConversationHero--membership-2": {
+        "message": "Member of $group1$ and $group2$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least two mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            }
+        }
+    },
+    "ConversationHero--membership-3": {
+        "message": "Member of $group1$, $group2$, and $group3$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least three mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            },
+            "group3": {
+                "content": "$3",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "ConversationHero--membership-extra": {
+        "message": "Member of $group1$, $group2$, $group3$ and $remainingCount$ more.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least three mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            },
+            "group3": {
+                "content": "$3",
+                "example": "Friends 🌿"
+            },
+            "remainingCount": {
+                "content": "$4",
+                "example": "3"
+            }
+        }
+    },
+    "ConversationHero--membership-added": {
+        "message": "$name$ added you to the group.",
+        "description": "Shown Indicates that you were added to a group by a given individual.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Jeff Smith"
+            }
+        }
+    },
+    "acceptCall": {
+        "message": "Beantwoorden",
+        "description": "Shown in tooltip for the button to accept a call (audio or video)"
+    },
+    "acceptCallWithoutVideo": {
+        "message": "Beantwoorden zonder video",
+        "description": "Shown in tooltip for the button to accept a video call without video"
+    },
+    "declineCall": {
+        "message": "Weigeren",
+        "description": "Shown in tooltip for the button to decline a call (audio or video)"
+    },
+    "declinedIncomingAudioCall": {
+        "message": "You declined an audio call",
+        "description": "Shown in conversation history when you declined an incoming audio call"
+    },
+    "declinedIncomingVideoCall": {
+        "message": "You declined a video call",
+        "description": "Shown in conversation history when you declined an incoming video call"
+    },
+    "acceptedIncomingAudioCall": {
+        "message": "Incoming audio call",
+        "description": "Shown in conversation history when you accepted an incoming audio call"
+    },
+    "acceptedIncomingVideoCall": {
+        "message": "Incoming video call",
+        "description": "Shown in conversation history when you accepted an incoming video call"
+    },
+    "missedIncomingAudioCall": {
+        "message": "Missed audio call",
+        "description": "Shown in conversation history when you missed an incoming audio call"
+    },
+    "missedIncomingVideoCall": {
+        "message": "Missed video call",
+        "description": "Shown in conversation history when you missed an incoming video call"
+    },
+    "acceptedOutgoingAudioCall": {
+        "message": "Outgoing audio call",
+        "description": "Shown in conversation history when you made an outgoing audio call"
+    },
+    "acceptedOutgoingVideoCall": {
+        "message": "Outgoing video call",
+        "description": "Shown in conversation history when you made an outgoing video call"
+    },
+    "missedOrDeclinedOutgoingAudioCall": {
+        "message": "Unanswered audio call",
+        "description": "Shown in conversation history when your audio call is missed or declined"
+    },
+    "missedOrDeclinedOutgoingVideoCall": {
+        "message": "Unanswered video call",
+        "description": "Shown in conversation history when your video call is missed or declined"
+    },
+    "incomingAudioCall": {
+        "message": "Incoming audio call...",
+        "description": "Shown in both the incoming call bar and notification for an incoming audio call"
+    },
+    "incomingVideoCall": {
+        "message": "Incoming video call...",
+        "description": "Shown in both the incoming call bar and notification for an incoming video call"
+    },
+    "outgoingCallPrering": {
+        "message": "Bellen...",
+        "description": "Shown in the call screen when placing an outgoing call that isn't ringing yet"
+    },
+    "outgoingCallRinging": {
+        "message": "Ringing...",
+        "description": "Shown in the call screen when placing an outgoing call that is now ringing"
+    },
+    "callReconnecting": {
+        "message": "Reconnecting...",
+        "description": "Shown in the call screen when the call is reconnecting due to network issues"
+    },
+    "callDuration": {
+        "message": "Signal $duration$",
+        "description": "Shown in the call screen to indicate how long the call has been connected",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "00:01"
+            }
+        }
     },
     "privacyPolicy": {
         "message": "Gebruiksvoorwaarden & privacybeleid",

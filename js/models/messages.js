@@ -131,13 +131,15 @@
 
     isNormalBubble() {
       return (
-        !this.isUnsupportedMessage() &&
+        !this.isCallHistory() &&
+        !this.isEndSession() &&
         !this.isExpirationTimerUpdate() &&
+        !this.isGroupUpdate() &&
         !this.isKeyChange() &&
         !this.isMessageHistoryUnsynced() &&
-        !this.isVerifiedChange() &&
-        !this.isGroupUpdate() &&
-        !this.isEndSession()
+        !this.isProfileChange() &&
+        !this.isUnsupportedMessage() &&
+        !this.isVerifiedChange()
       );
     },
 
@@ -178,6 +180,16 @@
           type: 'resetSessionNotification',
           data: this.getPropsForResetSessionNotification(),
         };
+      } else if (this.isCallHistory()) {
+        return {
+          type: 'callHistory',
+          data: this.getPropsForCallHistory(),
+        };
+      } else if (this.isProfileChange()) {
+        return {
+          type: 'profileChange',
+          data: this.getPropsForProfileChange(),
+        };
       }
 
       return {
@@ -188,30 +200,20 @@
 
     // Other top-level prop-generation
     getPropsForSearchResult() {
-      const sourceE164 = this.getSource();
-      const sourceUuid = this.getSourceUuid();
-      const fromContact = this.findAndFormatContact(sourceE164 || sourceUuid);
+      const ourId = ConversationController.getOurConversationId();
+      const sourceId = this.getContactId();
+      const fromContact = this.findAndFormatContact(sourceId);
 
-      if (
-        (sourceE164 && sourceE164 === this.OUR_NUMBER) ||
-        (sourceUuid && sourceUuid === this.OUR_UUID)
-      ) {
+      if (ourId === sourceId) {
         fromContact.isMe = true;
       }
 
       const convo = this.getConversation();
 
-      let to = convo ? this.findAndFormatContact(convo.get('id')) : {};
+      const to = convo ? this.findAndFormatContact(convo.get('id')) : {};
 
-      if (convo && convo.isMe()) {
+      if (to && convo && convo.isMe()) {
         to.isMe = true;
-      } else if (
-        (sourceE164 && convo && sourceE164 === convo.get('e164')) ||
-        (sourceUuid && convo && sourceUuid === convo.get('uuid'))
-      ) {
-        to = {
-          isMe: true,
-        };
       }
 
       return {
@@ -232,10 +234,10 @@
 
       const unidentifiedLookup = (
         this.get('unidentifiedDeliveries') || []
-      ).reduce((accumulator, uuidOrE164) => {
+      ).reduce((accumulator, identifier) => {
         // eslint-disable-next-line no-param-reassign
         accumulator[
-          ConversationController.getConversationId(uuidOrE164)
+          ConversationController.getConversationId(identifier)
         ] = true;
         return accumulator;
       }, Object.create(null));
@@ -244,7 +246,7 @@
       // Older messages don't have the recipients included on the message, so we fall
       //   back to the conversation's current recipients
       const conversationIds = this.isIncoming()
-        ? [this.getContact().get('id')]
+        ? [this.getContactId()]
         : _.union(
             (this.get('sent_to') || []).map(id =>
               ConversationController.getConversationId(id)
@@ -366,16 +368,22 @@
       // eslint-disable-next-line no-bitwise
       return !!(this.get('flags') & flag);
     },
+    isCallHistory() {
+      return this.get('type') === 'call-history';
+    },
+    isProfileChange() {
+      return this.get('type') === 'profile-change';
+    },
 
     // Props for each message type
     getPropsForUnsupportedMessage() {
       const requiredVersion = this.get('requiredProtocolVersion');
       const canProcessNow = this.CURRENT_PROTOCOL_VERSION >= requiredVersion;
-      const phoneNumber = this.getSource();
+      const sourceId = this.getContactId();
 
       return {
         canProcessNow,
-        contact: this.findAndFormatContact(phoneNumber),
+        contact: this.findAndFormatContact(sourceId),
       };
     },
     getPropsForTimerNotification() {
@@ -388,8 +396,14 @@
       const timespan = Whisper.ExpirationTimerOptions.getName(expireTimer || 0);
       const disabled = !expireTimer;
 
+      const sourceId = ConversationController.ensureContactIds({
+        e164: source,
+        uuid: sourceUuid,
+      });
+      const ourId = ConversationController.getOurConversationId();
+
       const basicProps = {
-        ...this.findAndFormatContact(source),
+        ...this.findAndFormatContact(sourceId),
         type: 'fromOther',
         timespan,
         disabled,
@@ -400,7 +414,7 @@
           ...basicProps,
           type: 'fromSync',
         };
-      } else if (source === this.OUR_NUMBER || sourceUuid === this.OUR_UUID) {
+      } else if (sourceId && sourceId === ourId) {
         return {
           ...basicProps,
           type: 'fromMe',
@@ -422,12 +436,12 @@
     getPropsForVerificationNotification() {
       const type = this.get('verified') ? 'markVerified' : 'markNotVerified';
       const isLocal = this.get('local');
-      const phoneNumber = this.get('verifiedChanged');
+      const identifier = this.get('verifiedChanged');
 
       return {
         type,
         isLocal,
-        contact: this.findAndFormatContact(phoneNumber),
+        contact: this.findAndFormatContact(identifier),
       };
     },
     getPropsForGroupNotification() {
@@ -445,6 +459,10 @@
         });
       }
 
+      const placeholderContact = {
+        title: i18n('unknownContact'),
+      };
+
       if (groupUpdate.joined) {
         changes.push({
           type: 'add',
@@ -452,7 +470,8 @@
             Array.isArray(groupUpdate.joined)
               ? groupUpdate.joined
               : [groupUpdate.joined],
-            phoneNumber => this.findAndFormatContact(phoneNumber)
+            identifier =>
+              this.findAndFormatContact(identifier) || placeholderContact
           ),
         });
       }
@@ -469,7 +488,8 @@
             Array.isArray(groupUpdate.left)
               ? groupUpdate.left
               : [groupUpdate.left],
-            phoneNumber => this.findAndFormatContact(phoneNumber)
+            identifier =>
+              this.findAndFormatContact(identifier) || placeholderContact
           ),
         });
       }
@@ -487,9 +507,8 @@
         });
       }
 
-      const sourceE164 = this.getSource();
-      const sourceUuid = this.getSourceUuid();
-      const from = this.findAndFormatContact(sourceE164 || sourceUuid);
+      const sourceId = this.getContactId();
+      const from = this.findAndFormatContact(sourceId);
 
       return {
         from,
@@ -500,6 +519,21 @@
       // It doesn't need anything right now!
       return {};
     },
+    getPropsForCallHistory() {
+      return {
+        callHistoryDetails: this.get('callHistoryDetails'),
+      };
+    },
+    getPropsForProfileChange() {
+      const change = this.get('profileChange');
+      const changedId = this.get('changedId');
+
+      return {
+        changedContact: this.findAndFormatContact(changedId),
+        change,
+      };
+    },
+
     getAttachmentsForMessage() {
       const sticker = this.get('sticker');
       if (sticker && sticker.data) {
@@ -524,10 +558,9 @@
         .map(attachment => this.getPropsForAttachment(attachment));
     },
     getPropsForMessage() {
-      const sourceE164 = this.getSource();
-      const sourceUuid = this.getSourceUuid();
-      const contact = this.findAndFormatContact(sourceE164 || sourceUuid);
-      const contactModel = this.findContact(sourceE164 || sourceUuid);
+      const sourceId = this.getContactId();
+      const contact = this.findAndFormatContact(sourceId);
+      const contactModel = this.findContact(sourceId);
 
       const authorColor = contactModel ? contactModel.getColor() : null;
       const authorAvatarPath = contactModel
@@ -543,6 +576,9 @@
 
       const conversation = this.getConversation();
       const isGroup = conversation && !conversation.isPrivate();
+      const conversationAccepted = Boolean(
+        conversation && conversation.getAccepted()
+      );
       const sticker = this.get('sticker');
 
       const isTapToView = this.isTapToView();
@@ -568,7 +604,7 @@
 
       const selectedReaction = (
         (this.get('reactions') || []).find(
-          re => re.fromId === this.OUR_NUMBER
+          re => re.fromId === ConversationController.getOurConversationId()
         ) || {}
       ).emoji;
 
@@ -577,12 +613,14 @@
         textPending: this.get('bodyPending'),
         id: this.id,
         conversationId: this.get('conversationId'),
+        conversationAccepted,
         isSticker: Boolean(sticker),
         direction: this.isIncoming() ? 'incoming' : 'outgoing',
         timestamp: this.get('sent_at'),
         status: this.getMessagePropStatus(),
         contact: this.getPropsForEmbeddedContact(),
         canReply: this.canReply(),
+        authorTitle: contact.title,
         authorColor,
         authorName: contact.name,
         authorProfileName: contact.profileName,
@@ -626,10 +664,7 @@
       return ConversationController.get(identifier);
     },
     getConversation() {
-      // This needs to be an unsafe call, because this method is called during
-      //   initial module setup. We may be in the middle of the initial fetch to
-      //   the database.
-      return ConversationController.getUnsafe(this.get('conversationId'));
+      return ConversationController.get(this.get('conversationId'));
     },
     createNonBreakingLastSeparator(text) {
       if (!text) {
@@ -650,7 +685,13 @@
       return this.get('type') === 'incoming';
     },
     getMessagePropStatus() {
+      const sent = this.get('sent');
+      const sentTo = this.get('sent_to') || [];
+
       if (this.hasErrors()) {
+        if (sent || sentTo.length > 0) {
+          return 'partial-sent';
+        }
         return 'error';
       }
       if (!this.isOutgoing()) {
@@ -666,8 +707,6 @@
       if (delivered || deliveredTo.length > 0) {
         return 'delivered';
       }
-      const sent = this.get('sent');
-      const sentTo = this.get('sent_to') || [];
       if (sent || sentTo.length > 0) {
         return 'sent';
       }
@@ -757,14 +796,21 @@
         referencedMessageNotFound,
       } = quote;
       const contact =
-        author && ConversationController.get(author || authorUuid);
+        (author || authorUuid) &&
+        ConversationController.get(
+          ConversationController.ensureContactIds({
+            e164: author,
+            uuid: authorUuid,
+          })
+        );
       const authorColor = contact ? contact.getColor() : 'grey';
 
       const authorPhoneNumber = format(author, {
         ourRegionCode: regionCode,
       });
       const authorProfileName = contact ? contact.getProfileName() : null;
-      const authorName = contact ? contact.getName() : null;
+      const authorName = contact ? contact.get('name') : null;
+      const authorTitle = contact ? contact.getTitle() : null;
       const isFromMe = contact ? contact.isMe() : false;
       const firstAttachment = quote.attachments && quote.attachments[0];
 
@@ -778,6 +824,7 @@
         authorId: author,
         authorPhoneNumber,
         authorProfileName,
+        authorTitle,
         authorName,
         authorColor,
         referencedMessageNotFound,
@@ -793,17 +840,18 @@
 
       const e164 = conversation.get('e164');
       const uuid = conversation.get('uuid');
+      const conversationId = conversation.get('id');
 
       const readBy = this.get('read_by') || [];
-      if (includesAny(readBy, identifier, e164, uuid)) {
+      if (includesAny(readBy, conversationId, e164, uuid)) {
         return 'read';
       }
       const deliveredTo = this.get('delivered_to') || [];
-      if (includesAny(deliveredTo, identifier, e164, uuid)) {
+      if (includesAny(deliveredTo, conversationId, e164, uuid)) {
         return 'delivered';
       }
       const sentTo = this.get('sent_to') || [];
-      if (includesAny(sentTo, identifier, e164, uuid)) {
+      if (includesAny(sentTo, conversationId, e164, uuid)) {
         return 'sent';
       }
 
@@ -835,6 +883,17 @@
       if (this.isUnsupportedMessage()) {
         return i18n('message--getDescription--unsupported-message');
       }
+      if (this.isProfileChange()) {
+        const change = this.get('profileChange');
+        const changedId = this.get('changedId');
+        const changedContact = this.findAndFormatContact(changedId);
+
+        return Signal.Util.getStringForProfileChange(
+          change,
+          changedContact,
+          i18n
+        );
+      }
       if (this.isTapToView()) {
         if (this.isErased()) {
           return i18n('message--getDescription--disappearing-media');
@@ -863,7 +922,9 @@
         if (groupUpdate.left === 'You') {
           return i18n('youLeftTheGroup');
         } else if (groupUpdate.left) {
-          return i18n('leftTheGroup', this.getNameForNumber(groupUpdate.left));
+          return i18n('leftTheGroup', [
+            this.getNameForNumber(groupUpdate.left),
+          ]);
         }
 
         if (!fromContact) {
@@ -873,7 +934,7 @@
         if (fromContact.isMe()) {
           messages.push(i18n('youUpdatedTheGroup'));
         } else {
-          messages.push(i18n('updatedTheGroup', fromContact.getDisplayName()));
+          messages.push(i18n('updatedTheGroup', [fromContact.getTitle()]));
         }
 
         if (groupUpdate.joined && groupUpdate.joined.length) {
@@ -886,12 +947,11 @@
 
           if (joinedContacts.length > 1) {
             messages.push(
-              i18n(
-                'multipleJoinedTheGroup',
-                _.map(joinedWithoutMe, contact =>
-                  contact.getDisplayName()
-                ).join(', ')
-              )
+              i18n('multipleJoinedTheGroup', [
+                _.map(joinedWithoutMe, contact => contact.getTitle()).join(
+                  ', '
+                ),
+              ])
             );
 
             if (joinedWithoutMe.length < joinedContacts.length) {
@@ -906,14 +966,14 @@
               messages.push(i18n('youJoinedTheGroup'));
             } else {
               messages.push(
-                i18n('joinedTheGroup', joinedContacts[0].getDisplayName())
+                i18n('joinedTheGroup', [joinedContacts[0].getTitle()])
               );
             }
           }
         }
 
         if (groupUpdate.name) {
-          messages.push(i18n('titleIsNow', groupUpdate.name));
+          messages.push(i18n('titleIsNow', [groupUpdate.name]));
         }
         if (groupUpdate.avatarUpdated) {
           messages.push(i18n('updatedGroupAvatar'));
@@ -940,24 +1000,28 @@
       if (this.get('sticker')) {
         return i18n('message--getNotificationText--stickers');
       }
+      if (this.isCallHistory()) {
+        return window.Signal.Components.getCallingNotificationText(
+          this.get('callHistoryDetails'),
+          window.i18n
+        );
+      }
       if (this.isExpirationTimerUpdate()) {
         const { expireTimer } = this.get('expirationTimerUpdate');
         if (!expireTimer) {
           return i18n('disappearingMessagesDisabled');
         }
 
-        return i18n(
-          'timerSetTo',
-          Whisper.ExpirationTimerOptions.getAbbreviated(expireTimer || 0)
-        );
+        return i18n('timerSetTo', [
+          Whisper.ExpirationTimerOptions.getAbbreviated(expireTimer || 0),
+        ]);
       }
       if (this.isKeyChange()) {
         const identifier = this.get('key_changed');
         const conversation = this.findContact(identifier);
-        return i18n(
-          'safetyNumberChangedGroup',
-          conversation ? conversation.getTitle() : null
-        );
+        return i18n('safetyNumberChangedGroup', [
+          conversation ? conversation.getTitle() : null,
+        ]);
       }
       const contacts = this.get('contact');
       if (contacts && contacts.length) {
@@ -1000,7 +1064,7 @@
       if (!conversation) {
         return number;
       }
-      return conversation.getDisplayName();
+      return conversation.getTitle();
     },
     onDestroy() {
       this.cleanup();
@@ -1111,7 +1175,7 @@
     isErased() {
       return Boolean(this.get('isErased'));
     },
-    async eraseContents(additionalProperties = {}) {
+    async eraseContents(additionalProperties = {}, shouldPersist = true) {
       if (this.get('isErased')) {
         return;
       }
@@ -1139,9 +1203,63 @@
       });
       this.trigger('content-changed');
 
-      await window.Signal.Data.saveMessage(this.attributes, {
-        Message: Whisper.Message,
-      });
+      if (shouldPersist) {
+        await window.Signal.Data.saveMessage(this.attributes, {
+          Message: Whisper.Message,
+        });
+      }
+    },
+    isEmpty() {
+      // Core message types - we check for all four because they can each stand alone
+      const hasBody = Boolean(this.get('body'));
+      const hasAttachment = (this.get('attachments') || []).length > 0;
+      const hasEmbeddedContact = (this.get('contact') || []).length > 0;
+      const isSticker = Boolean(this.get('sticker'));
+
+      // Rendered sync messages
+      const isCallHistory = this.isCallHistory();
+      const isGroupUpdate = this.isGroupUpdate();
+      const isEndSession = this.isEndSession();
+      const isExpirationTimerUpdate = this.isExpirationTimerUpdate();
+      const isVerifiedChange = this.isVerifiedChange();
+
+      // Placeholder messages
+      const isUnsupportedMessage = this.isUnsupportedMessage();
+      const isTapToView = this.isTapToView();
+
+      // Errors
+      const hasErrors = this.hasErrors();
+
+      // Locally-generated notifications
+      const isKeyChange = this.isKeyChange();
+      const isMessageHistoryUnsynced = this.isMessageHistoryUnsynced();
+      const isProfileChange = this.isProfileChange();
+
+      // Note: not all of these message types go through message.handleDataMessage
+
+      const hasSomethingToDisplay =
+        // Core message types
+        hasBody ||
+        hasAttachment ||
+        hasEmbeddedContact ||
+        isSticker ||
+        // Rendered sync messages
+        isCallHistory ||
+        isGroupUpdate ||
+        isEndSession ||
+        isExpirationTimerUpdate ||
+        isVerifiedChange ||
+        // Placeholder messages
+        isUnsupportedMessage ||
+        isTapToView ||
+        // Errors
+        hasErrors ||
+        // Locally-generated notifications
+        isKeyChange ||
+        isMessageHistoryUnsynced ||
+        isProfileChange;
+
+      return !hasSomethingToDisplay;
     },
     unload() {
       if (this.quotedMessage) {
@@ -1179,18 +1297,22 @@
 
       return this.OUR_UUID;
     },
-    getContact() {
+    getContactId() {
       const source = this.getSource();
       const sourceUuid = this.getSourceUuid();
 
       if (!source && !sourceUuid) {
-        return null;
+        return ConversationController.getOurConversationId();
       }
 
-      return ConversationController.getOrCreate(
-        source || sourceUuid,
-        'private'
-      );
+      return ConversationController.ensureContactIds({
+        e164: source,
+        uuid: sourceUuid,
+      });
+    },
+    getContact() {
+      const id = this.getContactId();
+      return ConversationController.get(id);
     },
     isOutgoing() {
       return this.get('type') === 'outgoing';
@@ -1353,7 +1475,7 @@
       let recipients = _.intersection(intendedRecipients, currentRecipients);
       recipients = _.without(recipients, successfulRecipients).map(id => {
         const c = ConversationController.get(id);
-        return c.get('uuid') || c.get('e164');
+        return c.getSendTarget();
       });
 
       if (!recipients.length) {
@@ -1452,26 +1574,32 @@
       );
     },
     canReply() {
+      const isAccepted = this.getConversation().getAccepted();
       const errors = this.get('errors');
       const isOutgoing = this.get('type') === 'outgoing';
       const numDelivered = this.get('delivered');
 
-      // Case 1: We cannot reply if this message is deleted for everyone
+      // Case 1: We cannot reply if we have accepted the message request
+      if (!isAccepted) {
+        return false;
+      }
+
+      // Case 2: We cannot reply if this message is deleted for everyone
       if (this.get('deletedForEveryone')) {
         return false;
       }
 
-      // Case 2: We can reply if this is outgoing and delievered to at least one recipient
+      // Case 3: We can reply if this is outgoing and delievered to at least one recipient
       if (isOutgoing && numDelivered > 0) {
         return true;
       }
 
-      // Case 3: We can reply if there are no errors
+      // Case 4: We can reply if there are no errors
       if (!errors || (errors && errors.length === 0)) {
         return true;
       }
 
-      // Otherwise we cannot reply
+      // Case 5: default
       return false;
     },
 
@@ -1651,7 +1779,7 @@
       try {
         this.set({
           // These are the same as a normal send()
-          sent_to: [conv.get('uuid') || conv.get('e164')],
+          sent_to: [conv.getSendTarget()],
           sent: true,
           expirationStartTimestamp: Date.now(),
         });
@@ -1661,8 +1789,8 @@
           unidentifiedDeliveries: result ? result.unidentifiedDeliveries : null,
 
           // These are unique to a Note to Self message - immediately read/delivered
-          delivered_to: [this.OUR_UUID || this.OUR_NUMBER],
-          read_by: [this.OUR_UUID || this.OUR_NUMBER],
+          delivered_to: [ConversationController.getOurConversationId()],
+          read_by: [ConversationController.getOurConversationId()],
         });
       } catch (result) {
         const errors = (result && result.errors) || [
@@ -1881,22 +2009,6 @@
         };
       }
 
-      let group = this.get('group_update');
-      if (group && group.avatar) {
-        window.log.info(
-          `Queueing group avatar download for message ${this.idForLogging()}`
-        );
-        count += 1;
-        group = {
-          ...group,
-          avatar: await window.Signal.AttachmentDownloads.addJob(group.avatar, {
-            messageId,
-            type: 'group-avatar',
-            index: 0,
-          }),
-        };
-      }
-
       let sticker = this.get('sticker');
       if (sticker) {
         window.log.info(
@@ -1957,7 +2069,6 @@
           preview,
           contact,
           quote,
-          group_update: group,
           sticker,
         });
 
@@ -1973,20 +2084,20 @@
         return message;
       }
 
-      const { attachments, id, author } = quote;
+      const { attachments, id, author, authorUuid } = quote;
       const firstAttachment = attachments[0];
+      const authorConversationId = ConversationController.ensureContactIds({
+        e164: author,
+        uuid: authorUuid,
+      });
 
       const collection = await window.Signal.Data.getMessagesBySentAt(id, {
         MessageCollection: Whisper.MessageCollection,
       });
       const found = collection.find(item => {
-        const messageAuthor = item.getContact();
+        const messageAuthorId = item.getContactId();
 
-        return (
-          messageAuthor &&
-          ConversationController.getConversationId(author) ===
-            messageAuthor.get('id')
-        );
+        return authorConversationId === messageAuthorId;
       });
 
       if (!found) {
@@ -2088,10 +2199,7 @@
       const source = message.get('source');
       const sourceUuid = message.get('sourceUuid');
       const type = message.get('type');
-      let conversationId = message.get('conversationId');
-      if (initialMessage.group) {
-        conversationId = initialMessage.group.id;
-      }
+      const conversationId = message.get('conversationId');
       const GROUP_TYPES = textsecure.protobuf.GroupContext.Type;
 
       const conversation = ConversationController.get(conversationId);
@@ -2186,10 +2294,12 @@
         }
 
         // Send delivery receipts, but only for incoming sealed sender messages
+        // and not for messages from unaccepted conversations
         if (
           type === 'incoming' &&
           this.get('unidentifiedDeliveryReceived') &&
-          !this.hasErrors()
+          !this.hasErrors() &&
+          conversation.getAccepted()
         ) {
           // Note: We both queue and batch because we want to wait until we are done
           //   processing incoming messages to start sending outgoing delivery receipts.
@@ -2217,7 +2327,7 @@
             item =>
               (item.image || item.title) &&
               urls.includes(item.url) &&
-              window.Signal.LinkPreviews.isLinkInWhitelist(item.url)
+              window.Signal.LinkPreviews.isLinkSafeToPreview(item.url)
           );
           if (preview.length < incomingPreview.length) {
             window.log.info(
@@ -2259,22 +2369,11 @@
               ...conversation.attributes,
             };
             if (dataMessage.group) {
-              let groupUpdate = null;
+              const pendingGroupUpdate = [];
               const memberConversations = await Promise.all(
-                (
-                  dataMessage.group.members || dataMessage.group.membersE164
-                ).map(member => {
-                  if (member.e164 || member.uuid) {
-                    return ConversationController.getOrCreateAndWait(
-                      member.e164 || member.uuid,
-                      'private'
-                    );
-                  }
-                  return ConversationController.getOrCreateAndWait(
-                    member,
-                    'private'
-                  );
-                })
+                dataMessage.group.membersE164.map(e164 =>
+                  ConversationController.getOrCreateAndWait(e164, 'private')
+                )
               );
               const members = memberConversations.map(c => c.get('id'));
               attributes = {
@@ -2289,27 +2388,100 @@
                   members: _.union(members, conversation.get('members')),
                 };
 
-                groupUpdate = {};
                 if (dataMessage.group.name !== conversation.get('name')) {
-                  groupUpdate.name = dataMessage.group.name;
+                  pendingGroupUpdate.push(['name', dataMessage.group.name]);
                 }
 
-                // Note: used and later cleared by background attachment downloader
-                groupUpdate.avatar = dataMessage.group.avatar;
+                const avatarAttachment = dataMessage.group.avatar;
+
+                let downloadedAvatar;
+                let hash;
+                if (avatarAttachment) {
+                  try {
+                    downloadedAvatar = await window.Signal.Util.downloadAttachment(
+                      avatarAttachment
+                    );
+
+                    if (downloadedAvatar) {
+                      const loadedAttachment = await Signal.Migrations.loadAttachmentData(
+                        downloadedAvatar
+                      );
+
+                      hash = await Signal.Types.Conversation.computeHash(
+                        loadedAttachment.data
+                      );
+                    }
+                  } catch (err) {
+                    window.log.info(
+                      'handleDataMessage: group avatar download failed'
+                    );
+                  }
+                }
+
+                const existingAvatar = conversation.get('avatar');
+
+                if (
+                  // Avatar added
+                  (!existingAvatar && avatarAttachment) ||
+                  // Avatar changed
+                  (existingAvatar && existingAvatar.hash !== hash) ||
+                  // Avatar removed
+                  (existingAvatar && !avatarAttachment)
+                ) {
+                  // Removes existing avatar from disk
+                  if (existingAvatar && existingAvatar.path) {
+                    await Signal.Migrations.deleteAttachmentData(
+                      existingAvatar.path
+                    );
+                  }
+
+                  let avatar = null;
+                  if (downloadedAvatar && avatarAttachment !== null) {
+                    const onDiskAttachment = await window.Signal.Types.Attachment.migrateDataToFileSystem(
+                      downloadedAvatar,
+                      {
+                        writeNewAttachmentData:
+                          window.Signal.Migrations.writeNewAttachmentData,
+                      }
+                    );
+                    avatar = {
+                      ...onDiskAttachment,
+                      hash,
+                    };
+                  }
+
+                  attributes.avatar = avatar;
+
+                  pendingGroupUpdate.push(['avatarUpdated', true]);
+                } else {
+                  window.log.info(
+                    'handleDataMessage: Group avatar hash matched; not replacing group avatar'
+                  );
+                }
 
                 const difference = _.difference(
                   members,
                   conversation.get('members')
                 );
                 if (difference.length > 0) {
-                  groupUpdate.joined = difference;
+                  // Because GroupV1 groups are based on e164 only
+                  const e164s = difference.map(id => {
+                    const c = ConversationController.get(id);
+                    return c ? c.get('e164') : null;
+                  });
+                  pendingGroupUpdate.push(['joined', e164s]);
                 }
                 if (conversation.get('left')) {
                   window.log.warn('re-added to a left group');
                   attributes.left = false;
+                  conversation.set({ addedBy: message.getContactId() });
                 }
               } else if (dataMessage.group.type === GROUP_TYPES.QUIT) {
-                const sender = ConversationController.get(source || sourceUuid);
+                const senderId = ConversationController.ensureContactIds({
+                  e164: source,
+                  uuid: sourceUuid,
+                });
+                const sender = ConversationController.get(senderId);
                 const inGroup = Boolean(
                   sender &&
                     (conversation.get('members') || []).includes(sender.id)
@@ -2324,9 +2496,9 @@
 
                 if (sender.isMe()) {
                   attributes.left = true;
-                  groupUpdate = { left: 'You' };
+                  pendingGroupUpdate.push(['left', 'You']);
                 } else {
-                  groupUpdate = { left: sender.get('id') };
+                  pendingGroupUpdate.push(['left', sender.get('id')]);
                 }
                 attributes.members = _.without(
                   conversation.get('members'),
@@ -2334,7 +2506,14 @@
                 );
               }
 
-              if (groupUpdate !== null) {
+              if (pendingGroupUpdate.length) {
+                const groupUpdate = pendingGroupUpdate.reduce(
+                  (acc, [key, value]) => {
+                    acc[key] = value;
+                    return acc;
+                  },
+                  {}
+                );
                 message.set({ group_update: groupUpdate });
               }
             }
@@ -2360,6 +2539,7 @@
               message.set({
                 expirationTimerUpdate: {
                   source,
+                  sourceUuid,
                   expireTimer: dataMessage.expireTimer,
                 },
               });
@@ -2470,12 +2650,11 @@
               } else if (conversation.isPrivate()) {
                 conversation.setProfileKey(profileKey);
               } else {
-                ConversationController.getOrCreateAndWait(
-                  source || sourceUuid,
-                  'private'
-                ).then(sender => {
-                  sender.setProfileKey(profileKey);
+                const localId = ConversationController.ensureContactIds({
+                  e164: source,
+                  uuid: sourceUuid,
                 });
+                ConversationController.get(localId).setProfileKey(profileKey);
               }
             }
 
@@ -2505,6 +2684,17 @@
             }
           }
 
+          // Drop empty messages. This needs to happen after the initial
+          // message.set call to make sure all possible properties are set
+          // before we determine that a message is empty.
+          if (message.isEmpty()) {
+            window.log.info(
+              `Dropping empty datamessage ${message.idForLogging()} in conversation ${conversation.idForLogging()}`
+            );
+            confirm();
+            return;
+          }
+
           const conversationTimestamp = conversation.get('timestamp');
           if (
             !conversationTimestamp ||
@@ -2517,9 +2707,28 @@
           }
 
           MessageController.register(message.id, message);
+          conversation.incrementMessageCount();
           window.Signal.Data.updateConversation(conversation.attributes);
 
-          await message.queueAttachmentDownloads();
+          // Only queue attachments for downloads if this is an outgoing message
+          // or we've accepted the conversation
+          if (this.getConversation().getAccepted() || message.isOutgoing()) {
+            await message.queueAttachmentDownloads();
+          }
+
+          // Does this message have any pending, previously-received associated reactions?
+          const reactions = Whisper.Reactions.forMessage(message);
+          reactions.forEach(reaction => {
+            message.handleReaction(reaction, false);
+          });
+
+          // Does this message have any pending, previously-received associated
+          // delete for everyone messages?
+          const deletes = Whisper.Deletes.forMessage(message);
+          deletes.forEach(del => {
+            window.Signal.Util.deleteForEveryone(message, del, false);
+          });
+
           await window.Signal.Data.saveMessage(message.attributes, {
             Message: Whisper.Message,
             forceSave: true,
@@ -2531,16 +2740,10 @@
 //             await conversation.notify(message);
           }
 
-          // Does this message have any pending, previously-received associated reactions?
-          const reactions = Whisper.Reactions.forMessage(message);
-          reactions.forEach(reaction => {
-            message.handleReaction(reaction);
-          });
-
-          // Does this message have any pending, previously-received associated
-          // delete for everyone messages?
-          const deletes = Whisper.Deletes.forMessage(message);
-          deletes.forEach(del => Whisper.Deletes.onDelete(del));
+          // Increment the sent message count if this is an outgoing message
+          if (type === 'outgoing') {
+            conversation.incrementSentMessageCount();
+          }
 
           Whisper.events.trigger('incrementProgress');
           confirm();
@@ -2557,7 +2760,7 @@
       });
     },
 
-    async handleReaction(reaction) {
+    async handleReaction(reaction, shouldPersist = true) {
       if (this.get('deletedForEveryone')) {
         return;
       }
@@ -2597,12 +2800,14 @@
         `Done processing reaction for message ${messageId}. Went from ${count} to ${newCount} reactions.`
       );
 
-      await window.Signal.Data.saveMessage(this.attributes, {
-        Message: Whisper.Message,
-      });
+      if (shouldPersist) {
+        await window.Signal.Data.saveMessage(this.attributes, {
+          Message: Whisper.Message,
+        });
+      }
     },
 
-    async handleDeleteForEveryone(del) {
+    async handleDeleteForEveryone(del, shouldPersist = true) {
       window.log.info('Handling DOE.', {
         fromId: del.get('fromId'),
         targetSentTimestamp: del.get('targetSentTimestamp'),
@@ -2617,7 +2822,10 @@
       Whisper.Notifications.remove(notificationForMessage);
 
       // Erase the contents of this message
-      await this.eraseContents({ deletedForEveryone: true, reactions: [] });
+      await this.eraseContents(
+        { deletedForEveryone: true, reactions: [] },
+        shouldPersist
+      );
 
       // Update the conversation's last message in case this was the last message
       this.getConversation().updateLastMessage();

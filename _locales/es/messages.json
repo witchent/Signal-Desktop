@@ -3,6 +3,10 @@
         "message": "Copiar fallo y cerrar Signal",
         "description": "Shown in the top-level error popup, allowing user to copy the error text and close the app"
     },
+    "unknownContact": {
+        "message": "Persona desconocida",
+        "description": "Shown as the name of a contact if we don't have any displayable information about them"
+    },
     "unknownGroup": {
         "message": "Grupo sin nombre",
         "description": "Shown as the name of a group if we don't have any information about it"
@@ -214,7 +218,7 @@
         "description": "Header of the error screen after a failed import"
     },
     "importingHeader": {
-        "message": "Cargando contactos y mensajes",
+        "message": "Transfiriendo personas y mensajes",
         "description": "Header of screen shown as data is import"
     },
     "importErrorFirst": {
@@ -294,7 +298,7 @@
         "description": "Shown in the conversation history when a user links a new device to explain what is not supported."
     },
     "youMarkedAsVerified": {
-        "message": "Has marcado las cifras de seguridad con $name$ como verificadas",
+        "message": "Has marcado tus cifras de seguridad con $name$ como verificadas",
         "description": "Shown in the conversation history when the user marks a contact as verified.",
         "placeholders": {
             "name": {
@@ -314,7 +318,7 @@
         }
     },
     "youMarkedAsVerifiedOtherDevice": {
-        "message": "Has marcado las cifras de seguridad con $name$ como verificadas en otro dispositivo",
+        "message": "Has marcado tus cifras de seguridad con $name$ como verificadas en otro dispositivo",
         "description": "Shown in the conversation history when we discover that the user marked a contact as verified on another device.",
         "placeholders": {
             "name": {
@@ -334,53 +338,37 @@
         }
     },
     "membersNeedingVerification": {
-        "message": "Las cifras de seguridad con estos participantes del grupo han cambiado desde la última vez que las verificaste. Haz clic en un participante del grupo para ver las cifras de seguridad nuevas.",
+        "message": "Tus cifras de seguridad con estos participantes del grupo han cambiado desde la última vez que las verificaste. Haz clic en un participante del grupo para ver las cifras de seguridad nuevas.",
         "description": "When there are multiple previously-verified group members with safety number changes, a banner will be shown. The list of contacts with safety number changes is shown, and this text introduces that list."
     },
-    "changedSinceVerifiedMultiple": {
-        "message": "Las cifras de seguridad con varios participantes de este grupo han cambiado desde la última vez que las verificaste, lo que significaría que alguien ha tratado de interceptar la comunicación o que simplemente han reinstalado Signal.",
-        "description": "Shown on confirmation dialog when user attempts to send a message"
-    },
-    "changedSinceVerified": {
-        "message": "Las cifras de seguridad con $name$ han cambiado desde la última vez que las verificaste, lo que significaría que alguien ha tratado de interceptar la comunicación o que $name$ simplemente ha reinstalado Signal.",
-        "description": "Shown on confirmation dialog when user attempts to send a message",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Bob"
-            }
-        }
-    },
     "changedRightAfterVerify": {
-        "message": "Las cifras de seguridad que estás intentando verificar han cambiado. Revisa las nuevas cifras de seguridad con $name$. Recuerda que este cambio podría significar que alguien ha tratado de interceptar la comunicación o que $name$ simplemente ha reinstalado Signal.",
+        "message": "The safety number you are trying to verify has changed. Please review your new safety number with $name1$. Remember, this change could mean that someone is trying to intercept your communication or that $name2$ has simply reinstalled Signal.",
         "description": "Shown on the safety number screen when the user has selected to verify/unverify a contact's safety number, and we immediately discover a safety number change",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
+                "example": "Bob"
+            },
+            "name2": {
+                "content": "$2",
                 "example": "Bob"
             }
         }
     },
-    "changedRecentlyMultiple": {
-        "message": "Las cifras de seguridad con varios participantes del grupo han cambiado recientemente, lo que significaría que alguien ha tratado de interceptar la comunicación o que simplemente han reinstalado Signal.",
+    "changedVerificationWarning": {
+        "message": "Las siguentes personas pueden haber reinstalado Signal o cambiado su dispositivo. Verifica tus cifras de seguridas con ellas para asegurar vuestra privacidad.",
         "description": "Shown on confirmation dialog when user attempts to send a message"
     },
-    "changedRecently": {
-        "message": "Las cifras de seguridad con $name$ han cambiado recientemente, lo que significaría que alguien ha tratado de interceptar la comunicación o que $name$ simplemente ha reinstalado Signal.",
-        "description": "Shown on confirmation dialog when user attempts to send a message",
-        "placeholders": {
-            "name": {
-                "content": "$1",
-                "example": "Bob"
-            }
-        }
-    },
     "identityKeyErrorOnSend": {
-        "message": "Las cifras de seguridad con $name$ han cambiado, lo que significaría que alguien ha tratado de interceptar la comunicación o que $name$ simplemente ha reinstalado Signal.  Tal vez desees verificar las cifras de seguridad con este contacto.",
+        "message": "Your safety number with $name1$ has changed. This could either mean that someone is trying to intercept your communication or that $name2$ has simply reinstalled Signal. You may wish to verify your safety number with this contact.",
         "description": "Shown when user clicks on a failed recipient in the message detail view after an identity key change",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
+                "example": "Bob"
+            },
+            "name2": {
+                "content": "$2",
                 "example": "Bob"
             }
         }
@@ -390,7 +378,7 @@
         "description": "Used on a warning dialog to make it clear that it might be risky to send the message."
     },
     "noLongerVerified": {
-        "message": "Las cifras de seguridad con $name$ han cambiado y ya no están verificadas. Haz clic para mostrar.",
+        "message": "Tus cifras de seguridad con $name$ han cambiado y ya no están verificadas. Haz clic para mostrar.",
         "description": "Shown in converation banner when user's safety number has changed, but they were previously verified.",
         "placeholders": {
             "name": {
@@ -400,16 +388,28 @@
         }
     },
     "multipleNoLongerVerified": {
-        "message": "Las cifras de seguridad con varios participantes de este grupo han cambiado y ya no están verificadas. Haz clic para mostrar.",
+        "message": "Tus cifras de seguridad con varios participantes de este grupo han cambiado y ya no están verificadas. Haz clic para mostrar.",
         "description": "Shown in conversation banner when more than one group member's safety number has changed, but they were previously verified."
     },
     "debugLogExplanation": {
-        "message": "Este registro se publicará on line para que los colaboradores tengan acceso. Puedes examinarlo y editarlo antes de enviarlo.",
+        "message": "Este registro se publicará on line para que l*s colaborador*s de Signal tengan acceso. Puedes examinarlo y editarlo antes de enviarlo.",
         "description": ""
     },
     "debugLogError": {
         "message": "Se ha producido un fallo al adjuntar el archivo con el registro de depuración. Considera añadir el archivo manualmente al enviar el informe del fallo. ",
         "description": ""
+    },
+    "debugLogCopy": {
+        "message": "Copiar",
+        "description": "Shown as the text for the copy button on the debug log screen"
+    },
+    "debugLogCopyAlt": {
+        "message": "Copiar enlace al portapapeles",
+        "description": "Shown as the alt text for the copy button on the debug log screen"
+    },
+    "debugLogLinkCopied": {
+        "message": "Enlace copiado al portapapeles",
+        "description": "Shown in a taost to let the user know that the link to the debug log has been copied to their clipboard"
     },
     "reportIssue": {
         "message": "Informar de un problema",
@@ -428,7 +428,7 @@
         "description": "Label for a button to accept a new safety number"
     },
     "verify": {
-        "message": "Marcar como verificado",
+        "message": "Marcar persona como verificada",
         "description": ""
     },
     "unverify": {
@@ -436,7 +436,7 @@
         "description": ""
     },
     "isVerified": {
-        "message": "Has verificado las cifras de seguridad con $name$.",
+        "message": "Has verificado tus cifras de seguridad con $name$.",
         "description": "Summary state shown at top of the safety number screen if user has verified contact.",
         "placeholders": {
             "name": {
@@ -446,7 +446,7 @@
         }
     },
     "isNotVerified": {
-        "message": "No has verificado las cifras de seguridad con $name$.",
+        "message": "No has verificado tus cifras de seguridad con $name$.",
         "description": "Summary state shown at top of the safety number screen if user has not verified contact.",
         "placeholders": {
             "name": {
@@ -456,7 +456,7 @@
         }
     },
     "verified": {
-        "message": "Verificado",
+        "message": "Persona verificada",
         "description": ""
     },
     "newIdentity": {
@@ -464,7 +464,7 @@
         "description": "Header for a key change dialog"
     },
     "identityChanged": {
-        "message": "Las cifras de seguridad con este contacto han cambiado, lo que significaría que, o bien alguien has tratado de interceptar la comunicación, o que este contacto simplemente ha reinstalado Signal. Tal vez desees verificar las nuevas cifras de seguridad.",
+        "message": "Tus cifras de seguridad con esta persona han cambiado, lo que significaría que, o bien alguien ha tratado de interceptar la comunicación, o que esta persona simplemente ha reinstalado Signal. Tal vez desees verificar las nuevas cifras de seguridad.",
         "description": ""
     },
     "incomingError": {
@@ -561,7 +561,7 @@
         "message": "Al incluír un adjunto que no es una imagen, el límite es un adjunto por mensaje.",
         "description": "An error popup when the user has attempted to add an attachment"
     },
-    "cannotMixImageAdnNonImageAttachments": {
+    "cannotMixImageAndNonImageAttachments": {
         "message": "No se pueden combinar adjuntos de otro tipo junto a imágenes.",
         "description": "An error popup when the user has attempted to add an attachment"
     },
@@ -613,6 +613,10 @@
         "message": "Mostrar atajos de teclado",
         "description": "Item under the help menu, pops up a screen showing the application's keyboard shortcuts"
     },
+    "contactUs": {
+        "message": "Contáctanos",
+        "description": "Item under the help menu, takes you to the contact us support page"
+    },
     "goToReleaseNotes": {
         "message": "Ir a las notas de versión",
         "description": "Item under the help menu, takes you to GitHub page for release notes"
@@ -625,9 +629,13 @@
         "message": "Ir a la página de soporte técnico",
         "description": "Item under the Help menu, takes you to the support page"
     },
-    "menuReportIssue": {
-        "message": "Informar de un problema",
-        "description": "Item under the Help menu, takes you to GitHub new issue form (title case)"
+    "goToGithub": {
+        "message": "Ir a GitHub",
+        "description": "Item under the Help menu, takes you to the GitHub repository for Signal Desktop"
+    },
+    "joinTheBeta": {
+        "message": "Probar la versión beta",
+        "description": "Item under the Help menu, takes you to an article describing how to install the beta release of Signal Desktop"
     },
     "signalDesktopPreferences": {
         "message": "Ajustes de Signal Desktop",
@@ -690,6 +698,10 @@
         "description": "Shown in the search left pane when no results were found",
         "placeholders": {
             "searchTerm": {
+                "content": "$1",
+                "example": "dog"
+            },
+            "conversationName": {
                 "content": "$2",
                 "example": "Friends"
             }
@@ -700,7 +712,7 @@
         "description": "Shown to separate the types of search results"
     },
     "contactsHeader": {
-        "message": "Contactos",
+        "message": "Personas",
         "description": "Shown to separate the types of search results"
     },
     "messagesHeader": {
@@ -708,19 +720,23 @@
         "description": "Shown to separate the types of search results"
     },
     "welcomeToSignal": {
-        "message": "Bienvenida a Signal",
+        "message": "Bienvenid* a Signal",
         "description": ""
     },
     "selectAContact": {
-        "message": "Selecciona un contacto o grupo para empezar a chatear.",
+        "message": "Selecciona una persona o grupo para empezar a chatear.",
         "description": ""
     },
     "typingAlt": {
         "message": "Animación de tecleo para este chat",
         "description": "Used as the 'title' attibute for the typing animation"
     },
+    "contactInAddressBook": {
+        "message": "This person is in your contacts.",
+        "description": "Description of icon denoting that contact is from your address book"
+    },
     "contactAvatarAlt": {
-        "message": "Avatar del contacto $name$",
+        "message": "Avatar de $name$",
         "description": "Used in the alt tag for the image avatar of a contact",
         "placeholders": {
             "name": {
@@ -833,6 +849,14 @@
         "message": "Para enviar notas de voz, permite a Signal Desktop acceder al micrófono.",
         "description": "Shown if the user attempts to send an audio message without audio permssions turned on"
     },
+    "audioCallingPermissionNeeded": {
+        "message": "For calling, you must allow Signal Desktop to access your microphone.",
+        "description": "Shown if the user attempts access the microphone for calling without audio permssions turned on"
+    },
+    "videoCallingPermissionNeeded": {
+        "message": "For video calling, you must allow Signal Desktop to access your camera.",
+        "description": "Shown if the user attempts access the camera for video calling without video permssions turned on"
+    },
     "allowAccess": {
         "message": "Permitir acceso",
         "description": "Button shown in popup asking to enable microphon/video permissions to send audio messages"
@@ -894,7 +918,7 @@
         "description": ""
     },
     "failedToSend": {
-        "message": "Fallo al enviar a algunos destinatarios. Comprueba la conexión.",
+        "message": "Fallo al enviar a algun*s destinatari*s. Comprueba la conexión.",
         "description": ""
     },
     "error": {
@@ -957,12 +981,12 @@
         "message": "Ver cifras de seguridad",
         "description": ""
     },
-    "viewAllMedia": {
-        "message": "Ver todos los adjuntos",
+    "viewRecentMedia": {
+        "message": "Ver adjuntos recientes",
         "description": "This is a menu item for viewing all media (images + video) in a conversation, using the imperative case, as in a command."
     },
     "verifyHelp": {
-        "message": "Si deseas verificar la seguridad del cifrado de extremo a extremo con $name$, compara las cifras de arriba con las cifras presentes en el dispositivo de tu contacto.",
+        "message": "Si deseas verificar la seguridad del cifrado de extremo a extremo con $name$, compara las cifras de arriba con las cifras presentes en el dispositivo de la otra persona.",
         "description": "",
         "placeholders": {
             "name": {
@@ -972,7 +996,7 @@
         }
     },
     "theirIdentityUnknown": {
-        "message": "No has intercambiado ningún mensaje con este contacto. Las cifras de seguridad estarán disponibles después de enviar el primer mensaje.",
+        "message": "No has intercambiado ningún mensaje con esta persona. Vuestras cifras de seguridad estarán disponibles después de enviar el primer mensaje.",
         "description": ""
     },
     "moreInfo": {
@@ -1032,7 +1056,7 @@
         "description": "Used in the media gallery documents tab to visually represent a file"
     },
     "installWelcome": {
-        "message": "Bienvenida a Signal Desktop",
+        "message": "Bienvenid* a Signal Desktop",
         "description": "Welcome title on the install page"
     },
     "installTagline": {
@@ -1072,7 +1096,7 @@
         "description": "The text on the button to finish the linking process, after choosing the device name"
     },
     "initialSync": {
-        "message": "Sincronizando contactos y grupos",
+        "message": "Sincronizando personas y grupos",
         "description": "Shown during initial link while contacts and groups are being pulled from mobile device"
     },
     "installConnectionFailed": {
@@ -1083,20 +1107,44 @@
         "message": "Lo sentimos, ya tienes demasiados dispositivos vinculados. Prueba a eliminar algunos.",
         "description": ""
     },
-    "settings": {
-        "message": "Ajustes",
-        "description": "Menu item and header for global settings"
+    "installTooOld": {
+        "message": "Actualiza Signal en este dispositivo para enlazar con tu teléfono.",
+        "description": ""
+    },
+    "installErrorHeader": {
+        "message": "¡Algo ha ido mal!",
+        "description": ""
+    },
+    "installTryAgain": {
+        "message": "Inténtalo de nuevo",
+        "description": ""
     },
     "theme": {
         "message": "Tema",
         "description": "Header for theme settings"
+    },
+    "calling": {
+        "message": "Llamadas",
+        "description": "Header for calling options on the settings screen"
+    },
+    "alwaysRelayCallsDescription": {
+        "message": "Redirigir llamadas siempre",
+        "description": "Description of the always relay calls setting"
+    },
+    "alwaysRelayCallsDetail": {
+        "message": "Redirige todas las llamadas a través del servidor de Signal para evitar revelar tu dirección IP. Activar la opción reducirá la calidad de las llamadas.",
+        "description": "Details describing the always relay calls setting"
     },
     "permissions": {
         "message": "Permisos",
         "description": "Header for permissions section of settings"
     },
     "mediaPermissionsDescription": {
-        "message": "Permitir acesso a cámara y micrófono",
+        "message": "Allow access to the microphone",
+        "description": "Description of the media permission description"
+    },
+    "mediaCameraPermissionsDescription": {
+        "message": "Allow access to the camera",
         "description": "Description of the media permission description"
     },
     "general": {
@@ -1132,7 +1180,7 @@
         "description": "Header of the full-screen delete data confirmation screen"
     },
     "deleteAllDataBody": {
-        "message": "Vas a eliminar toda la información de la cuenta de Signal en esta aplicación, incluyendo todos los contactos y mensajes. Siempre puedes volver a enlazar tu dispositivo móvil de nuevo, pero los mensajes eliminados no se restaurarán.",
+        "message": "Vas a eliminar toda la información de la cuenta de Signal en esta aplicación, incluyendo todos los mensajes. Siempre puedes volver a enlazar tu dispositivo móvil de nuevo, pero los mensajes eliminados no se restaurarán.",
         "description": "Text describing what exactly will happen if the user clicks the button to delete all data"
     },
     "deleteAllDataButton": {
@@ -1142,6 +1190,14 @@
     "deleteAllDataProgress": {
         "message": "Desconectando y borrando datos",
         "description": "Message shown to user when app is disconnected and data deleted"
+    },
+    "deleteOldIndexedDBData": {
+        "message": "Hemos encontrado datos antiguos de una versión obsoleta de Signal Desktop. Si decides continuar, se eliminarán esos datos y tu nueva instalación de Signal no los mostrará. ",
+        "description": "Shown if user last ran Signal Desktop before October 2018"
+    },
+    "deleteOldData": {
+        "message": "Eliminar datos antiguos",
+        "description": "Button to make the delete happen"
     },
     "notifications": {
         "message": "Notificaciones",
@@ -1156,7 +1212,7 @@
         "description": "Label for disabling notifications"
     },
     "nameAndMessage": {
-        "message": "Nombre de contacto y mensaje",
+        "message": "Persona y mensaje",
         "description": "Label for setting notifications to display name and message text"
     },
     "noNameOrMessage": {
@@ -1164,7 +1220,7 @@
         "description": "Label for setting notifications to display no name and no message text"
     },
     "nameOnly": {
-        "message": "Solo nombre de contacto",
+        "message": "Sólo nombre de la persona",
         "description": "Label for setting notifications to display sender name only"
     },
     "newMessage": {
@@ -1255,6 +1311,10 @@
         "message": "Fallo al enviar",
         "description": "Shown on outgoing message if it fails to send"
     },
+    "partiallySent": {
+        "message": "Partially sent, click for details",
+        "description": "Shown on outgoing message if it is partially sent"
+    },
     "showMore": {
         "message": "Detalles",
         "description": "Displays the details of a key change"
@@ -1284,11 +1344,11 @@
         "description": "Error message displayed when sending to an unregistered user."
     },
     "sync": {
-        "message": "Contactos",
+        "message": "Personas",
         "description": "Label for contact and group sync settings"
     },
     "syncExplanation": {
-        "message": "Importa todos los grupos y contactos de Signal desde tu teléfono móvil.",
+        "message": "Importa todos los grupos y personas de Signal desde tu teléfono móvil.",
         "description": "Explanatory text for sync settings"
     },
     "lastSynced": {
@@ -1352,7 +1412,7 @@
         "description": "Shown if the user tries to send more than 64kb of text"
     },
     "unblockToSend": {
-        "message": "Desbloquea este contacto para enviarle mensajes.",
+        "message": "Desbloquea esta persona para enviar mensajes.",
         "description": "Brief message shown when trying to message a blocked number"
     },
     "unblockGroupToSend": {
@@ -1360,7 +1420,7 @@
         "description": "Brief message shown when trying to message a blocked group"
     },
     "youChangedTheTimer": {
-        "message": "Has fijado la desaparición de mensajes en $time$",
+        "message": "You set the disappearing message time to $time$.",
         "description": "Message displayed when you change the message expiration timer in a conversation.",
         "placeholders": {
             "time": {
@@ -1370,7 +1430,7 @@
         }
     },
     "timerSetOnSync": {
-        "message": "Actualizando el temporizador de desaparición en $time$",
+        "message": "Updated the disappearing message time to $time$.",
         "description": "Message displayed when timer is set on initial link of desktop device.",
         "placeholders": {
             "time": {
@@ -1380,7 +1440,7 @@
         }
     },
     "theyChangedTheTimer": {
-        "message": "$name$ ha fijado la desaparición de mensajes en $time$",
+        "message": "$name$ set the disappearing message time to $time$.",
         "description": "Message displayed when someone else changes the message expiration timer in a conversation.",
         "placeholders": {
             "name": {
@@ -1498,7 +1558,7 @@
         "description": "Displayed in the left pane when the timer is turned off"
     },
     "disabledDisappearingMessages": {
-        "message": "$name$ ha desactivado la desaparición de mensajes",
+        "message": "$name$ disabled disappearing messages.",
         "description": "Displayed in the conversation list when the timer is turned off",
         "placeholders": {
             "name": {
@@ -1508,7 +1568,7 @@
         }
     },
     "youDisabledDisappearingMessages": {
-        "message": "Has desactivado la desaparición de mensajes",
+        "message": "Has desactivado la desaparición de mensajes.",
         "description": "Displayed in the conversation list when the timer is turned off"
     },
     "timerSetTo": {
@@ -1525,9 +1585,57 @@
         "message": "Reproducir notificaciones sonoras",
         "description": "Description for audio notification setting"
     },
+    "callRingtoneNotificationDescription": {
+        "message": "Play calling sounds",
+        "description": "Description for call ringtone notification setting"
+    },
+    "callSystemNotificationDescription": {
+        "message": "Show notifications for calls",
+        "description": "Description for call notification setting"
+    },
+    "incomingCallNotificationDescription": {
+        "message": "Enable incoming calls",
+        "description": "Description for incoming calls setting"
+    },
+    "contactChangedProfileName": {
+        "message": "$sender$ changed their profile name from $oldProfile$ to $newProfile$.",
+        "description": "Description for incoming calls setting",
+        "placeholders": {
+            "sender": {
+                "content": "$1",
+                "example": "Bob"
+            },
+            "oldProfile": {
+                "content": "$2",
+                "example": ".x8Skillz8x."
+            },
+            "newProfile": {
+                "content": "$3",
+                "example": "Bob Smith"
+            }
+        }
+    },
+    "changedProfileName": {
+        "message": "$oldProfile$ changed their profile name to $newProfile$.",
+        "description": "Shown when a contact not in your address book changes their profile name",
+        "placeholders": {
+            "oldProfile": {
+                "content": "$2",
+                "example": ".x8Skillz8x."
+            },
+            "newProfile": {
+                "content": "$3",
+                "example": "Bob Smith"
+            }
+        }
+    },
     "safetyNumberChanged": {
         "message": "Las cifras de seguridad han cambiado",
         "description": "A notification shown in the conversation when a contact reinstalls"
+    },
+    "safetyNumberChanges": {
+        "message": "Cambios en cifras de seguridad",
+        "description": "Title for safety number changed modal"
     },
     "safetyNumberChangedGroup": {
         "message": "Las cifras de seguridad con $name$ han cambiado",
@@ -1544,10 +1652,10 @@
         "description": "Label on button included with safety number change notification in the conversation"
     },
     "yourSafetyNumberWith": {
-        "message": "Tus cifras de seguridad con $name$:",
+        "message": "Your safety number with $name1$:",
         "description": "Heading for safety number view",
         "placeholders": {
-            "name": {
+            "name1": {
                 "content": "$1",
                 "example": "John"
             }
@@ -1569,6 +1677,10 @@
         "message": "Notas personales",
         "description": "Name for the conversation with your own phone number"
     },
+    "noteToSelfHero": {
+        "message": "En este chat puedes añadir notas, mensajes personales, fotos .... Si tu cuenta tiene dispositivos enlazados, el contenido se sincronizará.",
+        "description": "Description for the Note to Self conversation"
+    },
     "hideMenuBar": {
         "message": "Ocultar barra de menú",
         "description": "Label text for menu bar visibility setting"
@@ -1582,7 +1694,7 @@
         "description": "Label underneath number informing user that SMS is not supported on desktop"
     },
     "newPhoneNumber": {
-        "message": "Introduce un número de teléfono para añadir un contacto.",
+        "message": "Añade un número de teléfono a esta persona.",
         "description": "Placeholder for adding a new number to a contact"
     },
     "invalidNumberError": {
@@ -1693,6 +1805,10 @@
             }
         }
     },
+    "ConversationListItem--message-request": {
+        "message": "Solicitud de chat",
+        "description": "Preview shown for conversation if the user has not yet accepted an incoming message request"
+    },
     "ConversationListItem--draft-prefix": {
         "message": "Borrador:",
         "description": "Prefix shown in italic in conversation view when a draft is saved"
@@ -1716,6 +1832,10 @@
     "message--getDescription--disappearing-video": {
         "message": "Vídeo para ver solo una vez",
         "description": "Shown in notifications and in the left pane when a message is a view once video."
+    },
+    "message--deletedForEveryone": {
+        "message": "Mensaje borrado.",
+        "description": "Shown in a message's bubble when the message has been deleted for everyone."
     },
     "stickers--toast--InstallFailed": {
         "message": "Fallo al instalar el paquete de cromos (stickers)",
@@ -2003,6 +2123,10 @@
         "message": "Eliminar todos los adjuntos preseleccionados",
         "description": "Shown in the shortcuts guide"
     },
+    "Keyboard--conversation-by-index": {
+        "message": "Saltar al chat",
+        "description": "A shortcut allowing direct navigation to conversations 1 to 9 in list"
+    },
     "Keyboard--Key--ctrl": {
         "message": "Ctrl",
         "description": "Key shown in shortcut combination in shortcuts guide"
@@ -2022,6 +2146,14 @@
     "Keyboard--Key--enter": {
         "message": "Intro",
         "description": "Key shown in shortcut combination in shortcuts guide"
+    },
+    "Keyboard--Key--tab": {
+        "message": "Tabulador",
+        "description": "Key shown in shortcut combination in shortcuts guide"
+    },
+    "Keyboard--Key--one-to-nine-range": {
+        "message": "1 a 9",
+        "description": "Expresses that 1, 2, 3, up to 9 are available shortcut keys"
     },
     "Keyboard--header": {
         "message": "Atajos de teclado",
@@ -2049,6 +2181,18 @@
     },
     "Keyboard--close-curent-conversation": {
         "message": "Cerrar chat actual",
+        "description": "Shown in the shortcuts guide"
+    },
+    "Keyboard--calling-header": {
+        "message": "Llamadas",
+        "description": "Header of the keyboard shortcuts guide - calling section"
+    },
+    "Keyboard--toggle-audio": {
+        "message": "Toggle mute on and off",
+        "description": "Shown in the shortcuts guide"
+    },
+    "Keyboard--toggle-video": {
+        "message": "Toggle video on and off",
         "description": "Shown in the shortcuts guide"
     },
     "close-popup": {
@@ -2212,7 +2356,7 @@
         "description": "Help text for the share stage of the sticker creator"
     },
     "StickerCreator--ShareStage--callToAction": {
-        "message": "Usa el hashtag $hashtag$ en las redes sociales para ayudar a más usuarios a encontrar tu paquete de cromos (si así lo deseas).",
+        "message": "Usa el hashtag $hashtag$ en las redes sociales para ayudar a más personas a encontrar tu paquete de cromos (si así lo deseas).",
         "description": "Call to action text for the share stage of the sticker creator",
         "placeholders": {
             "hashtag": {
@@ -2289,9 +2433,331 @@
         "message": "Fallo al enviar la reacción. Inténtalo de nuevo.",
         "description": "Shown when a reaction fails to send"
     },
+    "ReactionsViewer--more": {
+        "message": "Más",
+        "description": "Use in the reaction picker as the alt text for the 'more' button"
+    },
     "ReactionsViewer--all": {
-        "message": "Todo",
+        "message": "Todas",
         "description": "Shown in reaction viewer as the title for the 'all' category"
+    },
+    "MessageRequests--message-direct": {
+        "message": "Let $name$ message you and share your name and photo with them? They won’t know you’ve seen their messages until you accept.",
+        "description": "Shown as the message for a message request in a direct message",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce"
+            }
+        }
+    },
+    "MessageRequests--message-direct-blocked": {
+        "message": "Let $name$ message you and share your name and photo with them? You won't receive any messages until you unblock them.",
+        "description": "Shown as the message for a message request in a direct message with a blocked account",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce"
+            }
+        }
+    },
+    "MessageRequests--message-group": {
+        "message": "¿Unirse a este grupo y compartir tu nombre y foto de perfil con sus participantes? No sabrán que has visto sus mensajes hasta que aceptes.",
+        "description": "Shown as the message for a message request in a group",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--message-group-blocked": {
+        "message": "¿Desbloquear este grupo y compartir tu nombre y foto de perfil con sus participantes? No recibirás ningún mensaje del grupo hasta que lo desbloquees.",
+        "description": "Shown as the message for a message request in a blocked group"
+    },
+    "MessageRequests--block": {
+        "message": "Bloquear",
+        "description": "Shown as a button to let the user block a message request"
+    },
+    "MessageRequests--unblock": {
+        "message": "Desbloquear",
+        "description": "Shown as a button to let the user unblock a message request"
+    },
+    "MessageRequests--unblock-confirm-title": {
+        "message": "Unblock $name$?",
+        "description": "Shown as a button to let the user unblock a message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--unblock-direct-confirm-body": {
+        "message": "Podréis chatear y llamaros mutuamente.",
+        "description": "Shown as the body in the confirmation modal for unblocking a private message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--unblock-group-confirm-body": {
+        "message": "Group members will be able to add your to this group again.",
+        "description": "Shown as the body in the confirmation modal for unblocking a group message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--block-and-delete": {
+        "message": "Bloquear y eliminar",
+        "description": "Shown as a button to let the user block and delete a message request"
+    },
+    "MessageRequests--block-direct-confirm-title": {
+        "message": "Block $name$?",
+        "description": "Shown as the title in the confirmation modal for blocking a private message request",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Cayce Pollard"
+            }
+        }
+    },
+    "MessageRequests--block-direct-confirm-body": {
+        "message": "Blocked people won't be able to call you or send you mesages.",
+        "description": "Shown as the body in the confirmation modal for blocking a private message request"
+    },
+    "MessageRequests--block-group-confirm-title": {
+        "message": "Block and Leave $group$?",
+        "description": "Shown as the title in the confirmation modal for blocking a group message request",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "MessageRequests--block-group-confirm-body": {
+        "message": "You will no longer receive messages or updates from this group and members won't be able to add you to this group again.",
+        "description": "Shown as the body in the confirmation modal for blocking a group message request"
+    },
+    "MessageRequests--delete": {
+        "message": "Eliminar",
+        "description": "Shown as a button to let the user delete any message request"
+    },
+    "MessageRequests--delete-direct-confirm-title": {
+        "message": "¿Eliminar el chat?",
+        "description": "Shown as the title in the confirmation modal for deleting a private message request"
+    },
+    "MessageRequests--delete-direct-confirm-body": {
+        "message": "Este chat se eliminará de todos tus dispositivos.",
+        "description": "Shown as the body in the confirmation modal for deleting a private message request"
+    },
+    "MessageRequests--delete-group-confirm-title": {
+        "message": "Delete and Leave $group$?",
+        "description": "Shown as the title in the confirmation modal for deleting a group message request",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "MessageRequests--delete-direct": {
+        "message": "Eliminar",
+        "description": "Shown as a button to let the user delete a direct message request"
+    },
+    "MessageRequests--delete-group": {
+        "message": "Eliminar y abandonar",
+        "description": "Shown as a button to let the user delete a group message request"
+    },
+    "MessageRequests--delete-group-confirm-body": {
+        "message": "Abandonarás este grupo, que se eliminará de todos tus dispositivos.",
+        "description": "Shown as the body in the confirmation modal for deleting a group message request"
+    },
+    "MessageRequests--accept": {
+        "message": "Aceptar",
+        "description": "Shown as a button to let the user accept a message request"
+    },
+    "ConversationHero--members": {
+        "message": "$count$ members",
+        "description": "Specifies the number of members in a group conversation",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "22"
+            }
+        }
+    },
+    "ConversationHero--members-1": {
+        "message": "1 participante",
+        "description": "Specifies the number of members in a group conversation when there is one member",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "22"
+            }
+        }
+    },
+    "ConversationHero--membership-1": {
+        "message": "Member of $group$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of a mutual group",
+        "placeholders": {
+            "group": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            }
+        }
+    },
+    "ConversationHero--membership-2": {
+        "message": "Member of $group1$ and $group2$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least two mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            }
+        }
+    },
+    "ConversationHero--membership-3": {
+        "message": "Member of $group1$, $group2$, and $group3$.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least three mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            },
+            "group3": {
+                "content": "$3",
+                "example": "Friends 🌿"
+            }
+        }
+    },
+    "ConversationHero--membership-extra": {
+        "message": "Member of $group1$, $group2$, $group3$ and $remainingCount$ more.",
+        "description": "Shown in the conversation hero to indicate this user is a member of at least three mutual groups",
+        "placeholders": {
+            "group1": {
+                "content": "$1",
+                "example": "NYC Rock Climbers"
+            },
+            "group2": {
+                "content": "$2",
+                "example": "Dinner Party"
+            },
+            "group3": {
+                "content": "$3",
+                "example": "Friends 🌿"
+            },
+            "remainingCount": {
+                "content": "$4",
+                "example": "3"
+            }
+        }
+    },
+    "ConversationHero--membership-added": {
+        "message": "$name$ added you to the group.",
+        "description": "Shown Indicates that you were added to a group by a given individual.",
+        "placeholders": {
+            "name": {
+                "content": "$1",
+                "example": "Jeff Smith"
+            }
+        }
+    },
+    "acceptCall": {
+        "message": "Atender",
+        "description": "Shown in tooltip for the button to accept a call (audio or video)"
+    },
+    "acceptCallWithoutVideo": {
+        "message": "Atender sin vídeo",
+        "description": "Shown in tooltip for the button to accept a video call without video"
+    },
+    "declineCall": {
+        "message": "Rechazar",
+        "description": "Shown in tooltip for the button to decline a call (audio or video)"
+    },
+    "declinedIncomingAudioCall": {
+        "message": "You declined an audio call",
+        "description": "Shown in conversation history when you declined an incoming audio call"
+    },
+    "declinedIncomingVideoCall": {
+        "message": "You declined a video call",
+        "description": "Shown in conversation history when you declined an incoming video call"
+    },
+    "acceptedIncomingAudioCall": {
+        "message": "Incoming audio call",
+        "description": "Shown in conversation history when you accepted an incoming audio call"
+    },
+    "acceptedIncomingVideoCall": {
+        "message": "Incoming video call",
+        "description": "Shown in conversation history when you accepted an incoming video call"
+    },
+    "missedIncomingAudioCall": {
+        "message": "Missed audio call",
+        "description": "Shown in conversation history when you missed an incoming audio call"
+    },
+    "missedIncomingVideoCall": {
+        "message": "Missed video call",
+        "description": "Shown in conversation history when you missed an incoming video call"
+    },
+    "acceptedOutgoingAudioCall": {
+        "message": "Outgoing audio call",
+        "description": "Shown in conversation history when you made an outgoing audio call"
+    },
+    "acceptedOutgoingVideoCall": {
+        "message": "Outgoing video call",
+        "description": "Shown in conversation history when you made an outgoing video call"
+    },
+    "missedOrDeclinedOutgoingAudioCall": {
+        "message": "Unanswered audio call",
+        "description": "Shown in conversation history when your audio call is missed or declined"
+    },
+    "missedOrDeclinedOutgoingVideoCall": {
+        "message": "Unanswered video call",
+        "description": "Shown in conversation history when your video call is missed or declined"
+    },
+    "incomingAudioCall": {
+        "message": "Incoming audio call...",
+        "description": "Shown in both the incoming call bar and notification for an incoming audio call"
+    },
+    "incomingVideoCall": {
+        "message": "Incoming video call...",
+        "description": "Shown in both the incoming call bar and notification for an incoming video call"
+    },
+    "outgoingCallPrering": {
+        "message": "Llamando...",
+        "description": "Shown in the call screen when placing an outgoing call that isn't ringing yet"
+    },
+    "outgoingCallRinging": {
+        "message": "Ringing...",
+        "description": "Shown in the call screen when placing an outgoing call that is now ringing"
+    },
+    "callReconnecting": {
+        "message": "Reconnecting...",
+        "description": "Shown in the call screen when the call is reconnecting due to network issues"
+    },
+    "callDuration": {
+        "message": "Signal $duration$",
+        "description": "Shown in the call screen to indicate how long the call has been connected",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "00:01"
+            }
+        }
     },
     "privacyPolicy": {
         "message": "Términos y política de privacidad",

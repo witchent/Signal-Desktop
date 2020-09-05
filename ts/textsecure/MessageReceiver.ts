@@ -19,9 +19,10 @@ import { IncomingIdentityKeyError } from './Errors';
 
 import {
   AttachmentPointerClass,
+  CallingMessageClass,
   DataMessageClass,
+  DownloadAttachmentType,
   EnvelopeClass,
-  ProtoBigNumberType,
   ReceiptMessageClass,
   SyncMessageClass,
   TypingMessageClass,
@@ -41,7 +42,10 @@ declare global {
     data?: any;
     deliveryReceipt?: any;
     error?: any;
+    eventType?: string | number;
     groupDetails?: any;
+    groupId?: string;
+    messageRequestResponseType?: number;
     proto?: any;
     read?: any;
     reason?: any;
@@ -51,6 +55,9 @@ declare global {
     source?: any;
     sourceUuid?: any;
     stickerPacks?: any;
+    threadE164?: string;
+    threadUuid?: string;
+    storageServiceKey?: ArrayBuffer;
     timestamp?: any;
     typing?: any;
     verified?: any;
@@ -61,22 +68,6 @@ declare global {
     senderUuid?: SignalProtocolAddressClass;
   }
 }
-
-type AttachmentType = {
-  cdnId?: string;
-  cdnKey?: string;
-  data: ArrayBuffer;
-  contentType?: string;
-  size?: number;
-  fileName?: string;
-  flags?: number;
-  width?: number;
-  height?: number;
-  caption?: string;
-  blurHash?: string;
-  uploadTimestamp?: ProtoBigNumberType;
-  cdnNumber?: number;
-};
 
 type CacheAddItemType = {
   envelope: EnvelopeClass;
@@ -380,6 +371,12 @@ class MessageReceiverInner extends EventTarget {
           ? envelope.serverTimestamp.toNumber()
           : null;
 
+        // Calculate the message age (time on server).
+        envelope.messageAgeSec = this.calculateMessageAge(
+          headers,
+          envelope.serverTimestamp
+        );
+
         this.cacheAndQueue(envelope, plaintext, request);
       } catch (e) {
         request.respond(500, 'Bad encrypted websocket message');
@@ -395,6 +392,33 @@ class MessageReceiverInner extends EventTarget {
 
     // tslint:disable-next-line no-floating-promises
     this.incomingQueue.add(job);
+  }
+  calculateMessageAge(
+    headers: Array<string>,
+    serverTimestamp?: number
+  ): number {
+    let messageAgeSec = 0; // Default to 0 in case of unreliable parameters.
+
+    if (serverTimestamp) {
+      // The 'X-Signal-Timestamp' is usually the last item, so start there.
+      let it = headers.length;
+      while (--it >= 0) {
+        const match = headers[it].match(/^X-Signal-Timestamp:\s*(\d+)\s*$/);
+        if (match && match.length === 2) {
+          const timestamp = Number(match[1]);
+
+          // One final sanity check, the timestamp when a message is pulled from
+          // the server should be later than when it was pushed.
+          if (timestamp > serverTimestamp) {
+            messageAgeSec = Math.floor((timestamp - serverTimestamp) / 1000);
+          }
+
+          break;
+        }
+      }
+    }
+
+    return messageAgeSec;
   }
   async addToQueue(task: () => Promise<void>) {
     this.count += 1;
@@ -1034,6 +1058,7 @@ class MessageReceiverInner extends EventTarget {
   ) {
     const {
       destination,
+      destinationUuid,
       timestamp,
       message: msg,
       expirationStartTimestamp,
@@ -1059,12 +1084,13 @@ class MessageReceiverInner extends EventTarget {
       msg.flags &&
       msg.flags & window.textsecure.protobuf.DataMessage.Flags.END_SESSION
     ) {
-      if (!destination) {
+      const identifier = destination || destinationUuid;
+      if (!identifier) {
         throw new Error(
           'MessageReceiver.handleSentMessage: Cannot end session with falsey destination'
         );
       }
-      p = this.handleEndSession(destination);
+      p = this.handleEndSession(identifier);
     }
     return p.then(async () =>
       this.processDecrypted(envelope, msg).then(message => {
@@ -1096,6 +1122,7 @@ class MessageReceiverInner extends EventTarget {
         ev.confirm = this.removeFromCache.bind(this, envelope);
         ev.data = {
           destination,
+          destinationUuid,
           timestamp: timestamp.toNumber(),
           serverTimestamp: envelope.serverTimestamp,
           device: envelope.sourceDevice,
@@ -1135,6 +1162,22 @@ class MessageReceiverInner extends EventTarget {
     ) {
       p = this.handleEndSession(destination);
     }
+
+    if (
+      msg.flags &&
+      msg.flags &
+        window.textsecure.protobuf.DataMessage.Flags.PROFILE_KEY_UPDATE
+    ) {
+      const ev = new Event('profileKeyUpdate');
+      ev.confirm = this.removeFromCache.bind(this, envelope);
+      ev.data = {
+        source: envelope.source,
+        sourceUuid: envelope.sourceUuid,
+        profileKey: msg.profileKey.toString('base64'),
+      };
+      return this.dispatchAndWait(ev);
+    }
+
     return p.then(async () =>
       this.processDecrypted(envelope, msg).then(message => {
         const groupId = message.group && message.group.id;
@@ -1213,9 +1256,8 @@ class MessageReceiverInner extends EventTarget {
     } else if (content.nullMessage) {
       this.handleNullMessage(envelope);
       return;
-    } else if (content.callMessage) {
-      this.handleCallMessage(envelope);
-      return;
+    } else if (content.callingMessage) {
+      return this.handleCallingMessage(envelope, content.callingMessage);
     } else if (content.receiptMessage) {
       return this.handleReceiptMessage(envelope, content.receiptMessage);
     } else if (content.typingMessage) {
@@ -1224,9 +1266,15 @@ class MessageReceiverInner extends EventTarget {
     this.removeFromCache(envelope);
     throw new Error('Unsupported content message');
   }
-  handleCallMessage(envelope: EnvelopeClass) {
-    window.log.info('call message from', this.getEnvelopeId(envelope));
+  async handleCallingMessage(
+    envelope: EnvelopeClass,
+    callingMessage: CallingMessageClass
+  ) {
     this.removeFromCache(envelope);
+    await window.Signal.Services.calling.handleCallingMessage(
+      envelope,
+      callingMessage
+    );
   }
   async handleReceiptMessage(
     envelope: EnvelopeClass,
@@ -1242,6 +1290,7 @@ class MessageReceiverInner extends EventTarget {
         ev.confirm = this.removeFromCache.bind(this, envelope);
         ev.deliveryReceipt = {
           timestamp: receiptMessage.timestamp[i].toNumber(),
+          envelopeTimestamp: envelope.timestamp.toNumber(),
           source: envelope.source,
           sourceUuid: envelope.sourceUuid,
           sourceDevice: envelope.sourceDevice,
@@ -1258,7 +1307,9 @@ class MessageReceiverInner extends EventTarget {
         ev.timestamp = envelope.timestamp.toNumber();
         ev.read = {
           timestamp: receiptMessage.timestamp[i].toNumber(),
-          reader: envelope.source || envelope.sourceUuid,
+          envelopeTimestamp: envelope.timestamp.toNumber(),
+          source: envelope.source,
+          sourceUuid: envelope.sourceUuid,
         };
         results.push(this.dispatchAndWait(ev));
       }
@@ -1350,7 +1401,7 @@ class MessageReceiverInner extends EventTarget {
       }
       const to = sentMessage.message.group
         ? `group(${sentMessage.message.group.id.toBinary()})`
-        : sentMessage.destination;
+        : sentMessage.destination || sentMessage.destinationUuid;
 
       window.log.info(
         'sent message to',
@@ -1389,6 +1440,15 @@ class MessageReceiverInner extends EventTarget {
       );
     } else if (syncMessage.viewOnceOpen) {
       return this.handleViewOnceOpen(envelope, syncMessage.viewOnceOpen);
+    } else if (syncMessage.messageRequestResponse) {
+      return this.handleMessageRequestResponse(
+        envelope,
+        syncMessage.messageRequestResponse
+      );
+    } else if (syncMessage.fetchLatest) {
+      return this.handleFetchLatest(envelope, syncMessage.fetchLatest);
+    } else if (syncMessage.keys) {
+      return this.handleKeys(envelope, syncMessage.keys);
     }
 
     this.removeFromCache(envelope);
@@ -1421,6 +1481,50 @@ class MessageReceiverInner extends EventTarget {
       ['sourceUuid'],
       'message_receiver::handleViewOnceOpen'
     );
+
+    return this.dispatchAndWait(ev);
+  }
+  async handleMessageRequestResponse(
+    envelope: EnvelopeClass,
+    sync: SyncMessageClass.MessageRequestResponse
+  ) {
+    window.log.info('got message request response sync message');
+
+    const ev = new Event('messageRequestResponse');
+    ev.confirm = this.removeFromCache.bind(this, envelope);
+    ev.threadE164 = sync.threadE164;
+    ev.threadUuid = sync.threadUuid;
+    ev.groupId = sync.groupId ? sync.groupId.toString('binary') : null;
+    ev.messageRequestResponseType = sync.type;
+
+    window.normalizeUuids(
+      ev,
+      ['threadUuid'],
+      'MessageReceiver::handleMessageRequestResponse'
+    );
+  }
+  async handleFetchLatest(
+    envelope: EnvelopeClass,
+    sync: SyncMessageClass.FetchLatest
+  ) {
+    window.log.info('got fetch latest sync message');
+
+    const ev = new Event('fetchLatest');
+    ev.confirm = this.removeFromCache.bind(this, envelope);
+    ev.eventType = sync.type;
+
+    return this.dispatchAndWait(ev);
+  }
+  async handleKeys(envelope: EnvelopeClass, sync: SyncMessageClass.Keys) {
+    window.log.info('got keys sync message');
+
+    if (!sync.storageService) {
+      return;
+    }
+
+    const ev = new Event('keys');
+    ev.confirm = this.removeFromCache.bind(this, envelope);
+    ev.storageServiceKey = sync.storageService.toArrayBuffer();
 
     return this.dispatchAndWait(ev);
   }
@@ -1467,6 +1571,7 @@ class MessageReceiverInner extends EventTarget {
       ev.confirm = this.removeFromCache.bind(this, envelope);
       ev.timestamp = envelope.timestamp.toNumber();
       ev.read = {
+        envelopeTimestamp: envelope.timestamp.toNumber(),
         timestamp: read[i].timestamp.toNumber(),
         sender: read[i].sender,
         senderUuid: read[i].senderUuid,
@@ -1499,6 +1604,11 @@ class MessageReceiverInner extends EventTarget {
       while (contactDetails !== undefined) {
         const contactEvent = new Event('contact');
         contactEvent.contactDetails = contactDetails;
+        window.normalizeUuids(
+          contactEvent,
+          ['contactDetails.verified.destinationUuid'],
+          'message_receiver::handleContacts::handleAttachment'
+        );
         results.push(this.dispatchAndWait(contactEvent));
 
         contactDetails = contactBuffer.next();
@@ -1591,7 +1701,32 @@ class MessageReceiverInner extends EventTarget {
       digest: attachment.digest ? attachment.digest.toString('base64') : null,
     };
   }
-  async downloadAttachment(attachment: AttachmentPointerClass) {
+  private isLinkPreviewDateValid(value: unknown): value is number {
+    return (
+      typeof value === 'number' &&
+      !Number.isNaN(value) &&
+      Number.isFinite(value) &&
+      value > 0
+    );
+  }
+  private cleanLinkPreviewDate(value: unknown): number | null {
+    if (this.isLinkPreviewDateValid(value)) {
+      return value;
+    }
+    if (!value) {
+      return null;
+    }
+    let result: unknown;
+    try {
+      result = (value as any).toNumber();
+    } catch (err) {
+      return null;
+    }
+    return this.isLinkPreviewDateValid(result) ? result : null;
+  }
+  async downloadAttachment(
+    attachment: AttachmentPointerClass
+  ): Promise<DownloadAttachmentType> {
     const encrypted = await this.server.getAttachment(
       attachment.cdnId || attachment.cdnKey,
       attachment.cdnNumber || 0
@@ -1623,7 +1758,7 @@ class MessageReceiverInner extends EventTarget {
   }
   async handleAttachment(
     attachment: AttachmentPointerClass
-  ): Promise<AttachmentType> {
+  ): Promise<DownloadAttachmentType> {
     const cleaned = this.cleanAttachment(attachment);
     return this.downloadAttachment(cleaned);
   }
@@ -1710,7 +1845,6 @@ class MessageReceiverInner extends EventTarget {
         case window.textsecure.protobuf.GroupContext.Type.DELIVER:
           decrypted.group.name = null;
           decrypted.group.membersE164 = [];
-          decrypted.group.members = [];
           decrypted.group.avatar = null;
           break;
         default: {
@@ -1745,18 +1879,11 @@ class MessageReceiverInner extends EventTarget {
     decrypted.attachments = (decrypted.attachments || []).map(
       this.cleanAttachment.bind(this)
     );
-    decrypted.preview = (decrypted.preview || []).map(item => {
-      const { image } = item;
-
-      if (!image) {
-        return item;
-      }
-
-      return {
-        ...item,
-        image: this.cleanAttachment(image),
-      };
-    });
+    decrypted.preview = (decrypted.preview || []).map(item => ({
+      ...item,
+      date: this.cleanLinkPreviewDate(item.date),
+      ...(item.image ? this.cleanAttachment(item.image) : {}),
+    }));
     decrypted.contact = (decrypted.contact || []).map(item => {
       const { avatar } = item;
 
@@ -1812,18 +1939,6 @@ class MessageReceiverInner extends EventTarget {
       }
     }
 
-    const groupMembers = decrypted.group ? decrypted.group.members || [] : [];
-
-    window.normalizeUuids(
-      decrypted,
-      [
-        'quote.authorUuid',
-        'reaction.targetAuthorUuid',
-        ...groupMembers.map((_member, i) => `group.members.${i}.uuid`),
-      ],
-      'message_receiver::processDecrypted'
-    );
-
     return Promise.resolve(decrypted);
     /* eslint-enable no-bitwise, no-param-reassign */
   }
@@ -1866,7 +1981,7 @@ export default class MessageReceiver {
   close: () => Promise<void>;
   downloadAttachment: (
     attachment: AttachmentPointerClass
-  ) => Promise<AttachmentType>;
+  ) => Promise<DownloadAttachmentType>;
   stopProcessing: () => Promise<void>;
   unregisterBatchers: () => void;
 

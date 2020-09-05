@@ -26,6 +26,7 @@ import { Dialogs } from '../types/Dialogs';
 // @ts-ignore
 import * as packageJson from '../../package.json';
 import { getSignatureFileName } from './signature';
+import { isPathInside } from '../util/isPathInside';
 
 import { LocaleType } from '../types/I18N';
 import { LoggerType } from '../types/Logging';
@@ -71,7 +72,7 @@ export async function checkForUpdates(
 export function validatePath(basePath: string, targetPath: string) {
   const normalized = normalize(targetPath);
 
-  if (!normalized.startsWith(basePath)) {
+  if (!isPathInside(normalized, basePath)) {
     throw new Error(
       `validatePath: Path ${normalized} is not under base path ${basePath}`
     );
@@ -169,8 +170,6 @@ export function showUpdateDialog(
   performUpdateCallback: () => void
 ): void {
   let ack = false;
-
-  ipcMain.once('start-update', performUpdateCallback);
 
   ipcMain.once('show-update-dialog-ack', () => {
     ack = true;
@@ -354,7 +353,7 @@ export async function deleteTempDir(targetDir: string) {
   }
 
   const baseTempDir = getBaseTempDir();
-  if (!targetDir.startsWith(baseTempDir)) {
+  if (!isPathInside(targetDir, baseTempDir)) {
     throw new Error(
       `deleteTempDir: Cannot delete path '${targetDir}' since it is not within base temp dir`
     );
@@ -379,4 +378,8 @@ export function getCliOptions<T>(options: any): T {
   }
 
   return cliOptions;
+}
+
+export function setUpdateListener(performUpdateCallback: () => void): void {
+  ipcMain.once('start-update', performUpdateCallback);
 }
